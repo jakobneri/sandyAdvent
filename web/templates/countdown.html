@@ -8,10 +8,10 @@
   <p class="kicker">Türchen {{.Day}} · {{.DateLabel}}</p>
   <h1 class="cd-title">Noch nicht ganz …</h1>
   <div class="countdown" role="timer" aria-label="Zeit bis zum Öffnen">
-    <div class="cd"><span class="cd__n" data-d>{{.Remaining.Days}}</span><span class="cd__l">Tage</span></div>
-    <div class="cd"><span class="cd__n" data-h>{{printf "%02d" .Remaining.Hours}}</span><span class="cd__l">Std</span></div>
-    <div class="cd"><span class="cd__n" data-m>{{printf "%02d" .Remaining.Minutes}}</span><span class="cd__l">Min</span></div>
-    <div class="cd"><span class="cd__n" data-s>{{printf "%02d" .Remaining.Seconds}}</span><span class="cd__l">Sek</span></div>
+    <div class="cd"><span class="cd__n" data-d>{{.Remaining.Days}}</span><span class="cd__l" data-dl>{{plural .Remaining.Days "Tag" "Tage"}}</span></div>
+    <div class="cd"><span class="cd__n" data-h>{{printf "%02d" .Remaining.Hours}}</span><span class="cd__l" data-hl>{{plural .Remaining.Hours "Stunde" "Stunden"}}</span></div>
+    <div class="cd"><span class="cd__n" data-m>{{printf "%02d" .Remaining.Minutes}}</span><span class="cd__l" data-ml>{{plural .Remaining.Minutes "Minute" "Minuten"}}</span></div>
+    <div class="cd"><span class="cd__n" data-s>{{printf "%02d" .Remaining.Seconds}}</span><span class="cd__l" data-sl>{{plural .Remaining.Seconds "Sekunde" "Sekunden"}}</span></div>
   </div>
   <p class="cheeky" data-line aria-live="polite">„{{.Line}}“</p>
   <p class="opens">Öffnet am {{.DateLabel}} um 0:00 Uhr.</p>

@@ -96,15 +96,27 @@ func DaysUntil(now time.Time, target Date) int { return DaysBetween(DateOf(now),
 
 // BannerText is the discreet Schatzogram teaser (docs/interface.md §2).
 func BannerText(now time.Time, reveal Date) string {
-	switch x := DaysUntil(now, reveal); {
-	case x <= 0:
+	x := DaysUntil(now, reveal)
+	if x <= 0 {
 		return "Schatzogram – heute"
-	case x == 1:
-		return "Schatzogram – noch 1 Tag"
-	default:
-		return fmt.Sprintf("Schatzogram – noch %d Tage", x)
 	}
+	return "Schatzogram – noch " + Count(x, "Tag", "Tage")
 }
+
+// ShowsBanner reports whether door day shows the Schatzogram banner: not on
+// 23 (teaser) and 24 (reveal), where the teaser/reveal takes over.
+func ShowsBanner(day int) bool { return day != 23 && day != 24 }
+
+// Plural returns one for n == 1 (also -1) and many otherwise ("0 Tage").
+func Plural(n int, one, many string) string {
+	if n == 1 || n == -1 {
+		return one
+	}
+	return many
+}
+
+// Count formats n with the correctly inflected unit: "1 Tag", "2 Tage".
+func Count(n int, one, many string) string { return fmt.Sprintf("%d %s", n, Plural(n, one, many)) }
 
 // YearsAgo returns the number of full years between then and on.
 func YearsAgo(then, on Date) int {

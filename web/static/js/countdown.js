@@ -10,19 +10,28 @@
   var offset = data.now - Date.now();
   var els = {
     d: doc.querySelector('[data-d]'), h: doc.querySelector('[data-h]'),
-    m: doc.querySelector('[data-m]'), s: doc.querySelector('[data-s]')
+    m: doc.querySelector('[data-m]'), s: doc.querySelector('[data-s]'),
+    dl: doc.querySelector('[data-dl]'), hl: doc.querySelector('[data-hl]'),
+    ml: doc.querySelector('[data-ml]'), sl: doc.querySelector('[data-sl]')
   };
   var reloading = false;
   var timer = 0; // genau eine laufende Schleife (visibilitychange ruft tick() erneut)
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function set(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+  // „1 Tag“, „2 Tage“, „0 Stunden“ … (gleiche Regel wie advent.Plural in Go)
+  function word(n, one, many) { return n === 1 ? one : many; }
+  function show(d, h, m, s) {
+    set(els.d, String(d)); set(els.h, pad(h)); set(els.m, pad(m)); set(els.s, pad(s));
+    set(els.dl, word(d, 'Tag', 'Tage')); set(els.hl, word(h, 'Stunde', 'Stunden'));
+    set(els.ml, word(m, 'Minute', 'Minuten')); set(els.sl, word(s, 'Sekunde', 'Sekunden'));
+  }
 
   function tick() {
     clearTimeout(timer);
     timer = 0;
     var rem = data.target - (Date.now() + offset);
     if (rem <= 0) {
-      set(els.d, '0'); set(els.h, '00'); set(els.m, '00'); set(els.s, '00');
+      show(0, 0, 0, 0);
       if (data.reload && !reloading) {
         reloading = true;
         setTimeout(function () { window.location.reload(); }, 700);
@@ -30,10 +39,7 @@
       return;
     }
     var secs = Math.floor(rem / 1000);
-    set(els.d, String(Math.floor(secs / 86400)));
-    set(els.h, pad(Math.floor(secs % 86400 / 3600)));
-    set(els.m, pad(Math.floor(secs % 3600 / 60)));
-    set(els.s, pad(secs % 60));
+    show(Math.floor(secs / 86400), Math.floor(secs % 86400 / 3600), Math.floor(secs % 3600 / 60), secs % 60);
     timer = setTimeout(tick, (rem % 1000) + 20);
   }
   tick();
