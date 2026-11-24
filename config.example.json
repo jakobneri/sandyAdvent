@@ -1,0 +1,37 @@
+{
+  "listen": "localhost:8081",
+  "base_url": "http://localhost:8081",
+  "year": 2026,
+  "doors_config": "doors/config.example.json",
+  "assets_dir": "doors/assets-example",
+  "tokens": {
+    "EXAMPLE-01": 1,
+    "EXAMPLE-03": 3,
+    "EXAMPLE-04": 4,
+    "EXAMPLE-06": 6,
+    "EXAMPLE-07": 7,
+    "EXAMPLE-09": 9,
+    "EXAMPLE-10": 10,
+    "EXAMPLE-12": 12,
+    "EXAMPLE-13": 13,
+    "EXAMPLE-15": 15,
+    "EXAMPLE-16": 16,
+    "EXAMPLE-18": 18,
+    "EXAMPLE-19": 19,
+    "EXAMPLE-21": 21,
+    "EXAMPLE-22": 22,
+    "EXAMPLE-23": 23,
+    "EXAMPLE-24": 24
+  },
+  "schatzogram": {
+    "welcome_url": "http://localhost:4200/welcome",
+    "reveal_date": "2026-12-24"
+  },
+  "admin": {
+    "user": "",
+    "password": ""
+  },
+  "open_log": "data/open-log.jsonl",
+  "dev": false,
+  "countdown_lines": []
+}

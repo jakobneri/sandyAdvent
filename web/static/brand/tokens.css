@@ -1,0 +1,14 @@
+/* Schatzogram Brand-Tokens – identisch in sandyAdvent und schatzogram (Quelle: schatzogram). */
+:root {
+  --sg-ember: #FF5A36;
+  --sg-gold: #FFB627;
+  --sg-plum: #3B1F4A;
+  --sg-blush: #FFE3D8;
+  --sg-cream: #FFF8F2;
+  --sg-night: #1B1220;
+  --sg-ink: #24161F;
+  --sg-gradient: linear-gradient(135deg, #FF5A36 0%, #FF8A3D 45%, #FFB627 100%);
+  --sg-radius: 18px;
+  --sg-font-logo: "Fraunces", Georgia, serif;
+  --sg-font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}

@@ -1,0 +1,24 @@
+{{define "content"}}
+<main class="wrap wrap--center" id="main">
+  <button type="button" class="closed-door" data-door aria-label="Am Türchen rütteln">
+    <span class="closed-door__num">{{.Day}}</span>
+    <span class="closed-door__ribbon" aria-hidden="true"></span>
+    <span class="closed-door__bow" aria-hidden="true"></span>
+  </button>
+  <p class="kicker">Türchen {{.Day}} · {{.DateLabel}}</p>
+  <h1 class="cd-title">Noch nicht ganz …</h1>
+  <div class="countdown" role="timer" aria-label="Zeit bis zum Öffnen">
+    <div class="cd"><span class="cd__n" data-d>{{.Remaining.Days}}</span><span class="cd__l">Tage</span></div>
+    <div class="cd"><span class="cd__n" data-h>{{printf "%02d" .Remaining.Hours}}</span><span class="cd__l">Std</span></div>
+    <div class="cd"><span class="cd__n" data-m>{{printf "%02d" .Remaining.Minutes}}</span><span class="cd__l">Min</span></div>
+    <div class="cd"><span class="cd__n" data-s>{{printf "%02d" .Remaining.Seconds}}</span><span class="cd__l">Sek</span></div>
+  </div>
+  <p class="cheeky" data-line aria-live="polite">„{{.Line}}“</p>
+  <p class="opens">Öffnet am {{.DateLabel}} um 0:00 Uhr.</p>
+</main>
+{{end}}
+
+{{define "scripts"}}
+<script type="application/json" id="cd-data">{{.Client}}</script>
+<script src="{{static "js/countdown.js"}}" defer></script>
+{{end}}

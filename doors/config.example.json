@@ -1,0 +1,184 @@
+{
+  "_comment": "Vorlage. Echte Version: doors/config.json (gitignored). Pfade in src/poster/image/images/assets sind relativ zu assets_dir. Jede benutzte Datei muss in 'assets' stehen (Datei oder Ordner mit '/').",
+  "doors": {
+    "1": {
+      "template": "media",
+      "title": "Hallo Schatzo!",
+      "params": {
+        "blocks": [
+          { "type": "text", "heading": "Willkommen im Adventskalender", "text": "Ab heute wartet jeden Tag ein kleines Türchen auf dich.\nHinter manchen steckt ein QR-Code, hinter anderen ein Gutschein.\n\nHör dir zuerst die Sprachnachricht an – da erkläre ich dir alles." },
+          { "type": "audio", "heading": "Sprachnachricht", "src": "ton.m4a", "caption": "Kopfhörer auf, Kakao in die Hand." },
+          { "type": "text", "text": "Bis morgen! (Na ja – bis übermorgen. Morgen ist Gutschein-Tag.)" }
+        ]
+      },
+      "assets": ["ton.m4a"]
+    },
+    "3": {
+      "template": "quiz",
+      "title": "Wie gut kennst du uns?",
+      "params": {
+        "intro": "Zehn Fragen über uns. Keine Sorge, du darfst raten.",
+        "questions": [
+          { "q": "Wo hatten wir unser erstes Date?", "options": ["Im Kino", "Auf dem Weihnachtsmarkt", "Beim Italiener", "Im Park"], "answer": 2, "explain": "Pizza verbindet." },
+          { "q": "Wer hat zuerst „Ich liebe dich“ gesagt?", "options": ["Du", "Ich", "Gleichzeitig"], "answer": 0 }
+        ],
+        "outro": { "perfect": "Volle Punktzahl – du kennst uns besser als ich!", "good": "Fast perfekt!", "low": "Wir müssen mehr Zeit miteinander verbringen. Gute Nachricht: wir tun das." }
+      }
+    },
+    "4": {
+      "template": "media",
+      "title": "Unser Jahr",
+      "params": {
+        "blocks": [
+          { "type": "text", "text": "Zwölf Monate, unzählige Momente – hier ein paar davon." },
+          { "type": "slideshow", "interval_ms": 5000, "images": [
+            { "src": "foto-1.jpg", "caption": "Januar: Neujahrsspaziergang" },
+            { "src": "foto-2.jpg", "caption": "März: Erster Ausflug ins Grüne" },
+            { "src": "foto-3.jpg", "caption": "Juni: Sommer, Sonne, Eis" },
+            { "src": "foto-4.jpg", "caption": "September: Urlaub" },
+            { "src": "foto-5.jpg", "caption": "November: Kuscheldecke-Saison" }
+          ] }
+        ]
+      },
+      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+    },
+    "6": {
+      "template": "memory",
+      "title": "Memory",
+      "params": {
+        "pairs": 8,
+        "images": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"],
+        "win_text": "Gewonnen! Dein Gedächtnis ist fast so gut wie deine Umarmungen."
+      },
+      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+    },
+    "7": {
+      "template": "media",
+      "title": "Film ab!",
+      "params": {
+        "blocks": [
+          { "type": "video", "src": "video.mp4", "poster": "video-poster.jpg", "caption": "Ton an!" },
+          { "type": "text", "text": "Ich hoffe, du musstest ein bisschen lachen." }
+        ]
+      },
+      "assets": ["video.mp4", "video-poster.jpg"]
+    },
+    "9": {
+      "template": "wordle",
+      "title": "Wörtchen-Rätsel",
+      "params": {
+        "words": [
+          { "word": "KEKSE", "hint": "Ohne die geht kein Advent." },
+          { "word": "GLÜHWEIN", "hint": "Weihnachtsmarkt in flüssig." }
+        ],
+        "max_guesses": 6,
+        "win_text": "Geknackt!"
+      }
+    },
+    "10": {
+      "template": "media",
+      "title": "Unser Soundtrack",
+      "params": {
+        "blocks": [
+          { "type": "text", "text": "Eine Playlist mit allen Liedern, die nach uns klingen." },
+          { "type": "link", "url": "https://open.spotify.com/", "label": "Playlist öffnen", "note": "Am besten laut. Und mit Tanzen." }
+        ]
+      }
+    },
+    "12": {
+      "template": "puzzle",
+      "title": "Puzzle-Zeit",
+      "params": { "mode": "slide", "image": "foto-2.jpg", "grid": 3, "win_text": "Perfekt zusammengesetzt – wie wir zwei." },
+      "assets": ["foto-2.jpg"]
+    },
+    "13": {
+      "template": "media",
+      "title": "Weißt du noch?",
+      "params": {
+        "blocks": [
+          { "type": "yearsago", "date": "2023-12-13", "image": "foto-5.jpg", "text": "Genau an diesem Tag haben wir … (hier kommt die echte Geschichte hin)." }
+        ]
+      },
+      "assets": ["foto-5.jpg"]
+    },
+    "15": {
+      "template": "quiz",
+      "title": "Wer hat's gesagt?",
+      "params": {
+        "intro": "Zitate aus unserem Chat. Wer war's?",
+        "questions": [
+          { "q": "„Nur noch eine Folge.“", "options": ["Jakob", "Sandy"], "answer": 1 },
+          { "q": "„Ich hab keinen Hunger.“ (5 Minuten später: Pizza)", "options": ["Jakob", "Sandy"], "answer": 0 }
+        ],
+        "outro": { "perfect": "Chat-Expertin!", "good": "Gut aufgepasst!", "low": "Hast du den Chat überhaupt gelesen?" }
+      }
+    },
+    "16": {
+      "template": "crossword",
+      "title": "Kreuzworträtsel",
+      "params": {
+        "words": [
+          { "answer": "MISTELZWEIG", "clue": "Darunter wird geküsst" },
+          { "answer": "SCHATZO", "clue": "Du" }
+        ],
+        "grid": "wird in M3 vom Kreuzworträtsel-Generator erzeugt"
+      }
+    },
+    "18": {
+      "template": "memory",
+      "title": "Memory für Profis",
+      "params": {
+        "pairs": 12,
+        "difficulty": "schwer",
+        "images": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"],
+        "win_text": "Respekt. Das war die schwere Variante."
+      },
+      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+    },
+    "19": {
+      "template": "media",
+      "title": "Noch was auf die Ohren",
+      "params": {
+        "blocks": [
+          { "type": "audio", "src": "ton.m4a", "caption": "Für die kalten Abende." },
+          { "type": "image", "src": "foto-4.jpg", "caption": "Erinnerst du dich?" }
+        ]
+      },
+      "assets": ["ton.m4a", "foto-4.jpg"]
+    },
+    "21": {
+      "template": "quiz",
+      "title": "Quiz, Teil 2",
+      "params": {
+        "intro": "Die Rückrunde. Diesmal schwerer.",
+        "questions": [
+          { "q": "Welches Datum ist unser Jahrestag?", "options": ["Variante A", "Variante B", "Variante C"], "answer": 0 }
+        ],
+        "outro": { "perfect": "Unschlagbar!", "good": "Stark!", "low": "Revanche nächstes Jahr?" }
+      }
+    },
+    "22": {
+      "template": "wrapped",
+      "title": "Schatzo Wrapped",
+      "params": { "stats": "stats.json", "year": 2026 }
+    },
+    "23": {
+      "template": "media",
+      "title": "Psst …",
+      "params": {
+        "blocks": [
+          { "type": "teaser", "text": "Morgen." }
+        ]
+      }
+    },
+    "24": {
+      "template": "reveal",
+      "title": "Frohe Weihnachten!",
+      "params": {
+        "headline": "Dein letztes Türchen",
+        "text": "Ab heute gehört uns ein kleines Stück Internet ganz allein.",
+        "button_label": "Jetzt öffnen"
+      }
+    }
+  }
+}

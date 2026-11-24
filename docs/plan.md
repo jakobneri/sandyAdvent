@@ -4,16 +4,16 @@ Deadline: Code + Inhalte bis **30.11.2026**. Erstes Türchen öffnet am 01.12.20
 Ein Branch pro Meilenstein (`feature/mN`), PR gegen `main`.
 
 ## M1 – Grundgerüst (Branch `feature/m1`)
-- [ ] Go-Server (ein Binary, `embed` für Templates/Static/Fonts), Config + Env-Overrides
-- [ ] Routing `/d/{token}` mit Token → Tag aus der Config, neutrale 404
-- [ ] Datumssperre Europe/Berlin (N.12. 00:00), Countdown-Seite mit frechem Spruch
-- [ ] Dev-Modus: `ADVENT_NOW`, `/dev/preview`, `/dev/door/{tag}` (nur Dev)
-- [ ] Gemeinsames Layout, Weihnachts-Design, Öffnungsanimation, Banner „Schatzogram – noch X Tage“
-- [ ] Template **media** (Audio, Video, Slideshow, Text, Link kombinierbar)
-- [ ] `doors/config.example.json` mit allen 17 Türchen + Dummy-Assets
-- [ ] `sandyadvent gen-tokens`
-- [ ] QR-Tool `tools/qrpdf` (A4-PDF, EC H, ≥ 3 cm, Tagesnummer, Base-URL-Parameter)
-- [ ] `scripts/dev-setup.sh`, Makefile, `.gitignore`, Basis-Tests
+- [x] Go-Server (ein Binary, `embed` für Templates/Static/Fonts), Config + Env-Overrides
+- [x] Routing `/d/{token}` mit Token → Tag aus der Config, neutrale 404
+- [x] Datumssperre Europe/Berlin (N.12. 00:00), Countdown-Seite mit frechem Spruch
+- [x] Dev-Modus: `ADVENT_NOW`, `/dev/preview`, `/dev/door/{tag}` (nur Dev)
+- [x] Gemeinsames Layout, Weihnachts-Design, Öffnungsanimation, Banner „Schatzogram – noch X Tage“
+- [x] Template **media** (Audio, Video, Slideshow, Text, Link kombinierbar)
+- [x] `doors/config.example.json` mit allen 17 Türchen + Dummy-Assets
+- [x] `sandyadvent gen-tokens`
+- [x] QR-Tool `tools/qrpdf` (A4-PDF, EC H, ≥ 3 cm, Tagesnummer, Base-URL-Parameter)
+- [x] `scripts/dev-setup.sh`, Makefile, `.gitignore`, Basis-Tests
 
 ## M2 – Spiele-Templates (Branch `feature/m2`)
 - [ ] quiz (Multiple Choice, Score, Abschlusstext) – Tage 3, 15, 21

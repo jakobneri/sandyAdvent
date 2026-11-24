@@ -1,0 +1,16 @@
+# Private Inhalte – niemals committen
+/config.json
+/doors/config.json
+/doors/assets/
+/data/
+*.jsonl
+
+# Build-Ausgaben
+/bin/
+/out/
+
+# Lokales
+.DS_Store
+*.swp
+.env
+node_modules/
