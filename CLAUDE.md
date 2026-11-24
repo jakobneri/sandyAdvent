@@ -48,6 +48,11 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 - Öffnungs-Log als JSONL (Tag, Zeitstempel, User-Agent) + `/admin` mit Basic Auth (M4).
 - Auf jedem Türchen dezenter Banner **„Schatzogram – noch X Tage“** (bis 24.12.2026 00:00 Berlin),
   **ohne** zu erklären, was das ist. Optik aus den gemeinsamen Brand-Tokens.
+  **Nicht** auf Türchen 23 und 24 (dort übernimmt Teaser bzw. Reveal).
+- Alle Zeitangaben korrekt pluralisiert („1 Tag“, „2 Tage“, „1 Stunde“, „1 Minute“, „1 Sekunde“) –
+  Countdown und Banner.
+- Außerhalb des Dev-Modus **verweigert der Server den Start**, solange `EXAMPLE-`-Tokens in der
+  Config stehen.
 
 ## Türchen (doors/config.json)
 | Tag | Template | Inhalt |
@@ -59,11 +64,11 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 | 7 | media | Video |
 | 9 | wordle | Wordle mit Insider-Wörtern |
 | 10 | media | Playlist-Link |
-| 12 | puzzle | Foto-Puzzle |
+| 12 | puzzle | Foto-Puzzle (Modus jigsaw) |
 | 13 | media | „Heute vor X Jahren“ |
 | 15 | quiz | „Wer hat's gesagt?“ |
 | 16 | crossword | Kreuzworträtsel mit Insider-Begriffen |
-| 18 | memory oder puzzle | schwerere Variante (offen, Jakob entscheidet) |
+| 18 | memory | schwerere Memory-Variante (mehr Paare) – entschieden 24.11. |
 | 19 | media | Sprachnachricht |
 | 21 | quiz | Quiz Teil 2 |
 | 22 | wrapped | „Schatzo Wrapped“ im Spotify-Wrapped-Stil |

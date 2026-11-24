@@ -17,10 +17,13 @@ Ein Branch pro Meilenstein (`feature/mN`), PR gegen `main`.
 
 ## M2 – Spiele-Templates (Branch `feature/m2`)
 - [ ] quiz (Multiple Choice, Score, Abschlusstext) – Tage 3, 15, 21
-- [ ] memory (Paaranzahl konfigurierbar) – Tag 6 (+ ggf. 18)
+- [ ] memory (Paaranzahl konfigurierbar) – Tag 6 + Tag 18 (schwer)
 - [ ] wordle (eigene Wörter, variable Länge, Umlaute) – Tag 9
-- [ ] puzzle (Schiebe- oder Jigsaw aus Foto) – Tag 12 (+ ggf. 18)
-- [ ] Entscheidung Tag 18: memory oder puzzle (Jakob)
+- [ ] puzzle (Modi jigsaw + sliding) – Tag 12 (jigsaw)
+- [x] Entscheidung Tag 18: memory (schwer)
+- [ ] Fix: Pluralisierung in Countdown und Banner („1 Tag“, „1 Stunde“ …)
+- [ ] Fix: Schatzogram-Banner auf Türchen 23 und 24 ausblenden
+- [ ] Fix: Start außerhalb Dev-Modus mit EXAMPLE-Tokens verweigern
 
 ## M3 – Rätsel & Wrapped (Branch `feature/m3`)
 - [ ] crossword-Template (Raster-JSON, Handy-Tastatur) – Tag 16
