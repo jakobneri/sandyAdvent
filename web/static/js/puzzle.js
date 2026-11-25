@@ -13,7 +13,7 @@
     var data = ctx.data, root = ctx.root, store = ctx.store;
     var N = data.grid || 4;
     var img = new Image();
-    var state, aspect = 1, lastWidth = 0;
+    var state, aspect = 1;
     var bar, boardWrap, winBox, previewEl, previewBtn;
 
     root.appendChild(h('p', { class: 'game__loading', text: 'Das Bild wird geladen …' }));
@@ -96,23 +96,11 @@
       }
     }
 
-    // Nur auf Breitenänderungen reagieren: die ein-/ausfahrende Adressleiste
-    // auf dem Handy ändert nur die Höhe und darf das Puzzle nicht neu bauen.
-    function onWidthChange(fn) {
-      var t = 0;
-      lastWidth = root.clientWidth;
-      w.addEventListener('resize', function () {
-        w.clearTimeout(t);
-        t = w.setTimeout(function () {
-          if (Math.abs(root.clientWidth - lastWidth) < 2) return;
-          lastWidth = root.clientWidth;
-          fn();
-        }, 150);
-      }, false);
-    }
+    // Nur auf Breitenänderungen reagieren (G.onWidthChange): die ein-/ausfahrende
+    // Adressleiste auf dem Handy ändert nur die Höhe und darf das Puzzle nicht neu bauen.
     var resizeHandler = null;
     function setResize(fn) {
-      if (!resizeHandler) onWidthChange(function () { if (resizeHandler) resizeHandler(); });
+      if (!resizeHandler) G.onWidthChange(root, function () { if (resizeHandler) resizeHandler(); });
       resizeHandler = fn;
     }
 
@@ -180,13 +168,16 @@
         var tw = sz.w / N, th = sz.h / N;
         for (var id = 0; id < N * N; id++) {
           var r0 = Math.floor(id / N), c0 = id % N;
+          // Bild auf einem inneren Element: der Knopf trägt nur die Position (transform),
+          // Animationen wie das „geht nicht“-Wackeln laufen auf dem Bild.
+          var face = h('span', { class: 'stile__face', 'aria-hidden': 'true' });
+          face.style.backgroundImage = 'url("' + data.image + '")';
+          face.style.backgroundSize = sz.w + 'px ' + sz.h + 'px';
+          face.style.backgroundPosition = (-c0 * tw) + 'px ' + (-r0 * th) + 'px';
           var t = h('button', { type: 'button', class: 'stile' + (id === N * N - 1 ? ' stile--last' : ''), 'data-tile': String(id) },
-            h('span', { class: 'stile__num', 'aria-hidden': 'true', text: String(id + 1) }));
+            [face, h('span', { class: 'stile__num', 'aria-hidden': 'true', text: String(id + 1) })]);
           t.style.width = Math.ceil(tw) + 'px';
           t.style.height = Math.ceil(th) + 'px';
-          t.style.backgroundImage = 'url("' + data.image + '")';
-          t.style.backgroundSize = sz.w + 'px ' + sz.h + 'px';
-          t.style.backgroundPosition = (-c0 * tw) + 'px ' + (-r0 * th) + 'px';
           (function (id) {
             t.addEventListener('click', function () {
               if (swiped) { swiped = false; return; }
@@ -399,10 +390,18 @@
         p.el.style.webkitTransform = tf;
       }
 
+      // Lose Teile ganz im Bild halten (inkl. Nasen), sonst ragen sie über den Bildschirmrand.
+      function keepOnScreen(x, y) {
+        return { x: Math.max(L.t, Math.min(L.W - L.cw - L.t, x)), y: Math.max(L.t, y) };
+      }
+
       function homePos(i) {
         var st = state.pieces[i];
         if (st.locked) { var tp = targetPos(st.id); return { x: tp.x, y: tp.y, s: 1 }; }
-        if (st.fx !== null && st.fx !== undefined) return { x: L.bx + st.fx * L.bw, y: L.by + st.fy * L.bh, s: 1 };
+        if (st.fx !== null && st.fx !== undefined) {
+          var k = keepOnScreen(L.bx + st.fx * L.bw, L.by + st.fy * L.bh);
+          return { x: k.x, y: k.y, s: 1 };
+        }
         return slotPos(st.slot);
       }
 
@@ -444,6 +443,14 @@
         boardWrap.appendChild(stage);
         bindPointer(stage, down, move, up);
         render();
+        if (state.done) showDone();
+      }
+
+      // fertiges Bild zeigen und die leere Ablage einklappen (auch nach jedem Neuaufbau)
+      function showDone() {
+        G.addClass(boardEl, 'is-done');
+        trayEl.hidden = true;
+        stage.style.height = Math.ceil(L.bh + 10) + 'px';
       }
 
       function local(x, y) {
@@ -493,7 +500,8 @@
         if (!drag) return false;
         if (e && e.preventDefault && e.cancelable) e.preventDefault();
         var pt = local(x, y);
-        var nx = Math.max(-L.cw * 0.5, Math.min(L.W - L.cw * 0.5, pt.x - drag.gu));
+        // rechts nie über den Bildschirmrand (sonst wird die Seite breiter), links darf es etwas hinaus
+        var nx = Math.max(-L.cw * 0.5, Math.min(L.W - L.cw - L.t, pt.x - drag.gu));
         var ny = Math.max(-L.ch * 0.5, Math.min(L.stageH - L.ch * 0.5, pt.y - drag.gv));
         drag.nx = nx; drag.ny = ny;
         if (!raf) {
@@ -527,6 +535,8 @@
           var cx = p.x + L.cw / 2, cy = p.y + L.ch / 2;
           var onBoard = cx > L.bx && cx < L.bx + L.bw && cy > L.by && cy < L.by + L.bh + L.ch * 0.25;
           if (onBoard && !cancel) {
+            var k = keepOnScreen(p.x, p.y);
+            if (k.x !== p.x || k.y !== p.y) setPos(i, k.x, k.y, 1);
             st.fx = (p.x - L.bx) / L.bw; st.fy = (p.y - L.by) / L.bh;
           } else {
             st.fx = null; st.fy = null;
@@ -543,10 +553,7 @@
         state.done = true;
         store.save(state);
         render();
-        G.addClass(boardEl, 'is-done');
-        // leere Ablage einklappen
-        trayEl.hidden = true;
-        stage.style.height = Math.ceil(L.bh + 10) + 'px';
+        showDone();
         showWin([total + ' Teile', 'alle gelegt'], animate, boardEl);
       }
 

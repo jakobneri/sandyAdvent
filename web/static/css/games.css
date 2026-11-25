@@ -19,6 +19,7 @@
 .game__error { color: #ffd6d6; background: rgba(161, 31, 54, .28); }
 .game__status { margin: 0; min-height: 0; text-align: center; font-weight: 800; color: var(--gold-200); }
 .game__status:empty { display: none; }
+.game__status.is-faded { opacity: 0; transition: opacity .4s; }
 .game__win:empty { display: none; }
 
 /* ---------- Buttons ---------- */
@@ -38,7 +39,7 @@
   box-shadow: inset 0 0 0 1.5px rgba(240, 198, 110, .55);
 }
 .btn--small {
-  min-height: 40px; padding: 8px 16px; font-size: 15px;
+  min-height: 44px; padding: 8px 18px; font-size: 15px;
   color: var(--gold-200); background: rgba(255, 250, 241, .07);
   box-shadow: inset 0 0 0 1.5px rgba(240, 198, 110, .4);
 }
@@ -196,7 +197,7 @@
 .quiz-card.is-shake { animation: shakeX .45s cubic-bezier(.36, .07, .19, .97); }
 .recap__box { margin-top: 18px; text-align: left; }
 .recap__box summary {
-  cursor: pointer; padding: 10px 4px; font-weight: 800; font-size: 15px; color: var(--cran-700); text-align: center;
+  cursor: pointer; min-height: 44px; padding: 12px 4px; font-weight: 800; font-size: 15px; color: var(--cran-700); text-align: center;
   touch-action: manipulation;
 }
 .recap { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -327,10 +328,11 @@
 .wround__sub { margin: 4px 0 14px; color: var(--ink-700); }
 .wround__sub strong { letter-spacing: .08em; color: var(--pine-600); }
 .wsum { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.wsum__item { display: flex; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: 12px; background: rgba(255, 255, 255, .7); font-size: 15px; }
-.wsum__word { font-weight: 800; letter-spacing: .1em; color: var(--pine-600); overflow-wrap: anywhere; text-align: left; }
+.wsum__item { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; padding: 8px 12px; border-radius: 12px; background: rgba(255, 255, 255, .7); font-size: 15px; }
+/* Wort nie mitten drin umbrechen; reicht der Platz nicht, rutscht die Info in die nächste Zeile */
+.wsum__word { font-weight: 800; letter-spacing: .08em; color: var(--pine-600); white-space: nowrap; text-align: left; }
 .wsum__item.is-lost .wsum__word { color: var(--cran-600); }
-.wsum__info { color: var(--ink-500); white-space: nowrap; }
+.wsum__info { margin-left: auto; color: var(--ink-500); white-space: nowrap; }
 
 /* ---------- Puzzle ---------- */
 .ptools { display: flex; justify-content: center; gap: 10px; }
@@ -351,16 +353,20 @@
   touch-action: none;
 }
 .stile {
-  position: absolute; top: 0; left: 0; padding: 0; border: 0; border-radius: 0;
+  position: absolute; top: 0; left: 0; padding: 0; border: 0; border-radius: 0; background: transparent;
+  touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.stile__face {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: block;
   background-color: var(--night-800); background-repeat: no-repeat;
   box-shadow: inset 0 0 0 1px rgba(7, 23, 18, .65), inset 1px 1px 0 2px rgba(255, 255, 255, .14);
-  touch-action: none; -webkit-user-select: none; user-select: none;
 }
 .sboard.is-anim .stile { transition: transform .16s var(--ease-out); }
 .stile--last { visibility: hidden; opacity: 0; }
 .sboard.is-solved .stile--last { visibility: visible; opacity: 1; transition: opacity .6s; }
-.sboard.is-solved .stile { box-shadow: none; }
-.stile.is-nope { animation: nudge .25s ease-in-out; }
+.sboard.is-solved .stile__face { box-shadow: none; }
+/* auf dem inneren Bild – ein transform am Knopf würde dessen Inline-translate3d (Position) überschreiben */
+.stile.is-nope .stile__face { animation: nudge .25s ease-in-out; }
 .stile__num {
   position: absolute; top: 4px; left: 4px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px;
   display: none; place-items: center; font-weight: 800; font-size: 13px; line-height: 22px;
@@ -409,7 +415,7 @@
   30%, 50%, 70% { transform: translateX(-6px); }
   40%, 60% { transform: translateX(6px); }
 }
-@keyframes nudge { 50% { transform: scale(.96); } }
+@keyframes nudge { 50% { transform: scale(.94); box-shadow: inset 0 0 0 3px rgba(194, 52, 71, .85); } }
 @keyframes tilePop { 50% { transform: scale(1.1); } }
 @keyframes tileFlip { 0% { transform: rotateX(0); } 45% { transform: rotateX(90deg); } 55% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
 @keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14px); } 70% { transform: translateY(2px); } }

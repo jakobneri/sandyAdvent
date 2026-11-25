@@ -243,6 +243,57 @@
     try { el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); } catch (e) { el.scrollIntoView(); }
   }
 
+  // fn erst nach der Öffnungsanimation (html.intro, s. boot.js/door.js) ausführen.
+  function afterIntro(fn) {
+    var de = doc.documentElement;
+    if (!/\bintro\b/.test(de.className)) { fn(); return; }
+    var t = w.setInterval(function () {
+      if (/\bintro\b/.test(de.className)) return;
+      w.clearInterval(t);
+      w.setTimeout(fn, 200);
+    }, 100);
+  }
+
+  // fn einmal ausführen, sobald el nach der Öffnungsanimation gut sichtbar ist
+  // (ohne IntersectionObserver sofort). Rückgabe: {cancel()}.
+  function whenSeen(el, fn, ratio) {
+    var off = false, io = null;
+    function go() {
+      if (off) return;
+      off = true;
+      if (io) io.disconnect();
+      fn();
+    }
+    afterIntro(function () {
+      if (off) return;
+      if (!w.IntersectionObserver) { go(); return; }
+      // Elemente, die höher als der Bildschirm sind, können nie ganz sichtbar sein.
+      var hgt = el.offsetHeight || 1;
+      var r = Math.max(0.1, Math.min(ratio || 0.6, (w.innerHeight || 640) * 0.8 / hgt));
+      io = new w.IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting && entries[i].intersectionRatio >= r - 0.01) { go(); return; }
+        }
+      }, { threshold: [r] });
+      io.observe(el);
+    });
+    return { cancel: function () { off = true; if (io) io.disconnect(); } };
+  }
+
+  // Nur auf Breitenänderungen reagieren: die ein-/ausfahrende Adressleiste auf dem
+  // Handy ändert nur die Höhe und soll das Spielfeld nicht neu anordnen.
+  function onWidthChange(el, fn, delay) {
+    var t = 0, last = el.clientWidth;
+    w.addEventListener('resize', function () {
+      w.clearTimeout(t);
+      t = w.setTimeout(function () {
+        if (Math.abs(el.clientWidth - last) < 2) return;
+        last = el.clientWidth;
+        fn();
+      }, delay || 150);
+    }, false);
+  }
+
   /* ---------- Start ---------- */
   // SAGame.start('memory', function (ctx) { … }) – ctx: root, data, store, section
   function start(kind, init) {
@@ -276,6 +327,7 @@
     plural: plural, count: count, fmtTime: fmtTime, durationText: durationText,
     shuffle: shuffle, range: range, store: store, haptic: haptic, celebrate: celebrate,
     button: button, winPanel: winPanel, scrollIntoView: scrollIntoView, start: start,
+    afterIntro: afterIntro, whenSeen: whenSeen, onWidthChange: onWidthChange,
     reduceMotion: reduceMotion
   };
 })(window);

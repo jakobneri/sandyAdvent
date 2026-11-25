@@ -117,7 +117,7 @@ Unbekannte Felder sind ein Fehler (Tippfehler fallen bei `make check` / beim Sta
 | `pairs` | 2–18 Paare (bis 12 Paare passt das Raster ohne Scrollen auf 360 px) |
 | `images` | mind. `pairs` verschiedene Bilder; sind es mehr, wird pro Spiel zufällig ausgewählt |
 | `card_back` | optionales Bild für die Kartenrückseite (sonst festliches Muster) |
-| `peek_ms` | 0–10000: zu Beginn alle Karten kurz zeigen (Standard 0) |
+| `peek_ms` | 0–10000: zu Beginn alle Karten so lange zeigen (Standard 0); startet erst nach der Öffnungsanimation, sobald das Spielfeld zu sehen ist |
 | `show_moves` | Zugzähler (Standard `true`), `show_timer` Stoppuhr (Standard `false`) |
 | `win_text` | Abschlusstext |
 

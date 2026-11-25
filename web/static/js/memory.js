@@ -12,7 +12,7 @@
     var IMGS = data.images || [];
     var PAIRS = Math.min(data.pairs || 0, IMGS.length);
     var state, cards = [], open = [], locked = false, timerId = 0, runningSince = 0;
-    var grid, pairsEl, movesEl, timeEl, statusEl, winBox;
+    var grid, board, pairsEl, movesEl, timeEl, statusEl, winBox, peek = null, baseH = 0;
 
     function fresh() {
       var pick = G.shuffle(G.range(IMGS.length)).slice(0, PAIRS);
@@ -60,11 +60,14 @@
     }
 
     /* ---------- Raster: Spalten so wählen, dass bis 12 Paare ohne Scrollen passen ---------- */
+    // Höhe nur beim ersten Aufbau bzw. bei Breitenänderung messen, damit die
+    // ein-/ausfahrende Adressleiste die Karten nicht springen lässt.
     function layout() {
       var n = state.deck.length;
-      var W = grid.parentNode.clientWidth || 320;
+      var W = innerWidth(board) || 320;
       var gap = n > 16 ? 6 : 8;
-      var H = Math.max(240, (w.innerHeight || 640) * 0.62);
+      if (!baseH) baseH = w.innerHeight || 640;
+      var H = Math.max(240, baseH * 0.62);
       var best = null;
       for (var c = 2; c <= 6; c++) {
         var r = Math.ceil(n / c);
@@ -80,6 +83,16 @@
       grid.style.gridTemplateColumns = 'repeat(' + best.c + ', ' + s + 'px)';
       grid.style.gap = gap + 'px';
       grid.style.setProperty('--card', s + 'px');
+    }
+
+    // Breite ohne Innenabstand (clientWidth enthält das Padding von .mboard).
+    function innerWidth(el) {
+      var W = el.clientWidth;
+      try {
+        var cs = w.getComputedStyle(el);
+        W -= (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+      } catch (e) { W -= 20; }
+      return W;
     }
 
     /* ---------- Karten ---------- */
@@ -102,6 +115,7 @@
 
     function flip(i) {
       if (locked || state.done || isMatched(i) || open.indexOf(i) >= 0) return;
+      if (peek) { peek.cancel(); peek = null; G.addClass(statusEl, 'is-faded'); } // schon losgelegt: kein Aufdecken mehr
       startTimer();
       open.push(i);
       setFace(i, true);
@@ -163,6 +177,7 @@
 
     function build(isReplay) {
       stopTimer();
+      if (peek) { peek.cancel(); peek = null; }
       open = []; locked = false; cards = [];
       G.clear(root);
       pairsEl = h('span', { class: 'gchip', 'data-pairs': '' });
@@ -179,7 +194,8 @@
       winBox = h('div', { class: 'game__win' });
       root.appendChild(bar);
       root.appendChild(statusEl);
-      root.appendChild(h('div', { class: 'mboard' }, grid));
+      board = h('div', { class: 'mboard' }, grid);
+      root.appendChild(board);
       root.appendChild(winBox);
       for (var j = 0; j < state.matched.length; j++) G.addClass(cards[state.matched[j]], 'is-matched');
       for (var k = 0; k < cards.length; k++) setFace(k, isMatched(k));
@@ -187,18 +203,23 @@
       renderStats();
       if (state.done) { win(false); return; }
       if (isReplay) G.scrollIntoView(root);
-      // Kurz alle Karten zeigen (nur bei einem frischen Spiel).
+      // Kurz alle Karten zeigen (nur bei einem frischen Spiel) – erst nach der
+      // Öffnungsanimation und wenn das Spielfeld zu sehen ist, sonst verpufft es.
       if (data.peek_ms > 0 && state.moves === 0 && state.matched.length === 0) {
-        locked = true;
-        statusEl.textContent = 'Gut merken …';
-        w.setTimeout(function () {
+        statusEl.textContent = 'Gleich siehst du alle Karten kurz.';
+        peek = G.whenSeen(board, function () {
+          peek = null;
+          locked = true;
+          statusEl.textContent = 'Gut merken …';
           for (var i = 0; i < cards.length; i++) setFace(i, true);
-        }, 350);
-        w.setTimeout(function () {
-          for (var i = 0; i < cards.length; i++) setFace(i, false);
-          locked = false;
-          statusEl.textContent = '';
-        }, 350 + data.peek_ms);
+          w.setTimeout(function () {
+            for (var i = 0; i < cards.length; i++) setFace(i, false);
+            locked = false;
+            statusEl.textContent = 'Los geht’s!';
+            // Text nur ausblenden, nicht entfernen: das Spielfeld soll beim Tippen nicht springen.
+            w.setTimeout(function () { G.addClass(statusEl, 'is-faded'); }, 1600);
+          }, 450 + data.peek_ms);
+        }, 0.7);
       }
     }
 
@@ -210,10 +231,6 @@
     if (!valid(state)) state = fresh();
     state.matched = state.matched.filter(function (x) { return typeof x === 'number' && x >= 0 && x < state.deck.length; });
     build(false);
-    var resizeT = 0;
-    w.addEventListener('resize', function () {
-      w.clearTimeout(resizeT);
-      resizeT = w.setTimeout(layout, 120);
-    }, false);
+    G.onWidthChange(root, function () { baseH = 0; layout(); }, 120);
   });
 })();

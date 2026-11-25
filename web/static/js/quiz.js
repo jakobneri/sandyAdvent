@@ -72,7 +72,7 @@
       G.clear(root);
       var card = h('div', { class: 'quiz-card quiz-card--start' }, [
         h('p', { class: 'quiz__big', text: String(Q.length) }),
-        h('p', { class: 'quiz__lead', text: G.plural(Q.length, 'Frage', 'Fragen') + ' warten auf dich.' }),
+        h('p', { class: 'quiz__lead', text: G.plural(Q.length, 'Frage wartet', 'Fragen warten') + ' auf dich.' }),
         h('p', { class: 'quiz__hint', text: 'Tippe auf die Antwort, die du für richtig hältst. Du siehst sofort, ob es stimmt.' }),
         G.button('Los geht’s', {
           onclick: function () {
@@ -91,6 +91,8 @@
       var q = Q[qi];
       var pick = state.picks[state.i];
       var isAnswered = typeof pick === 'number';
+      // Doppeltipp auf „Weiter“/„Los geht’s“ darf nicht gleich die nächste Frage beantworten.
+      var readyAt = Date.now() + (focus ? 400 : 0);
       var card = h('div', { class: 'quiz-card quiz-card--q', 'data-question': String(state.i) });
       card.appendChild(header());
       if (q.quote) {
@@ -162,7 +164,7 @@
       }
 
       function answer(oi) {
-        if (typeof state.picks[state.i] === 'number') return;
+        if (typeof state.picks[state.i] === 'number' || Date.now() < readyAt) return;
         state.picks[state.i] = oi;
         pick = oi;
         save();

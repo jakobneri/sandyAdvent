@@ -40,11 +40,19 @@
     }
 
     /* ---------- Aufbau ---------- */
+    // Kachelgröße nach Breite und – damit alle Versuche über die Bildschirm-Tastatur
+    // passen – nach Höhe. Die Höhe wird nur beim Aufbau/bei Breitenänderung gemessen
+    // (ein-/ausfahrende Adressleiste soll nichts verschieben).
+    var baseH = 0;
     function sizeBoard() {
       var n = len();
       var W = root.clientWidth || 320;
       var gap = n > 8 ? 4 : 6;
       var t = Math.floor((W - 8 - (n - 1) * gap) / n);
+      if (!baseH) baseH = w.innerHeight || 640;
+      var kh = kbd && !kbd.hidden ? kbd.offsetHeight : 0;
+      var byH = Math.floor((baseH - kh - 150 - (MAX - 1) * gap) / MAX);
+      t = Math.min(t, Math.max(byH, 34));
       t = Math.max(20, Math.min(t, 58));
       boardEl.style.setProperty('--tile', t + 'px');
       boardEl.style.setProperty('--gap', gap + 'px');
@@ -123,20 +131,23 @@
       kbd = h('div', { class: 'wkbd', role: 'group', 'aria-label': 'Tastatur' });
       for (var r = 0; r < ROWS.length; r++) {
         var row = h('div', { class: 'wkbd__row' + (r === 2 ? ' wkbd__row--umlaut' : '') });
-        if (r === 3) row.appendChild(h('button', { type: 'button', class: 'wkey wkey--wide wkey--enter', 'data-key': 'Enter', text: 'Prüfen' }));
+        if (r === 3) row.appendChild(h('button', { type: 'button', class: 'wkey wkey--wide wkey--enter', tabindex: '-1', 'data-key': 'Enter', text: 'Prüfen' }));
         var chars = ROWS[r].split('');
         for (var i = 0; i < chars.length; i++) {
-          var b = h('button', { type: 'button', class: 'wkey', 'data-key': chars[i], text: chars[i] });
+          var b = h('button', { type: 'button', class: 'wkey', tabindex: '-1', 'data-key': chars[i], text: chars[i] });
           keyEls[chars[i]] = b;
           row.appendChild(b);
         }
         if (r === 3) {
-          var bs = h('button', { type: 'button', class: 'wkey wkey--wide wkey--back', 'data-key': 'Backspace', 'aria-label': 'Löschen' });
+          var bs = h('button', { type: 'button', class: 'wkey wkey--wide wkey--back', tabindex: '-1', 'data-key': 'Backspace', 'aria-label': 'Löschen' });
           bs.innerHTML = BACK; // statisches SVG
           row.appendChild(bs);
         }
         kbd.appendChild(row);
       }
+      // Tasten nie fokussieren: sonst löst Leertaste/Enter auf einer echten Tastatur die zuletzt
+      // getippte Bildschirm-Taste erneut aus.
+      kbd.addEventListener('mousedown', function (e) { e.preventDefault(); }, false);
       kbd.addEventListener('click', function (e) {
         var t = e.target;
         while (t && t !== kbd && !t.getAttribute('data-key')) t = t.parentNode;
@@ -156,6 +167,23 @@
       if (buffer.length >= len()) { G.replayClass(rowsEls[cur().guesses.length], 'is-shake'); return; }
       buffer.push(ch);
       renderTyping(true);
+      keepRowVisible();
+    }
+
+    // Die Zeile, in die gerade getippt wird, über der (klebenden) Bildschirm-Tastatur halten.
+    function keepRowVisible() {
+      var row = rowsEls[cur().guesses.length];
+      if (!row || !row.getBoundingClientRect) return;
+      var r = row.getBoundingClientRect();
+      var limit = w.innerHeight || 640;
+      if (kbd && !kbd.hidden) limit = Math.min(limit, kbd.getBoundingClientRect().top);
+      limit -= 10;
+      var dy = 0;
+      if (r.bottom > limit) dy = r.bottom - limit;
+      else if (r.top < 8) dy = r.top - 8;
+      if (dy) {
+        try { w.scrollBy({ top: dy, left: 0, behavior: G.reduceMotion ? 'auto' : 'smooth' }); } catch (e) { w.scrollBy(0, dy); }
+      }
     }
 
     function renderTyping(pop) {
@@ -236,7 +264,7 @@
         var tries = headEl.querySelector('[data-tries]');
         if (tries) tries.textContent = tryText();
         if (r.status !== 'playing') roundOver(true);
-        else renderTyping();
+        else { renderTyping(); keepRowVisible(); }
       });
     }
 
@@ -317,6 +345,10 @@
       var t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
       var k = e.key;
+      if ((k === ' ' || k === 'Spacebar') && t && t.getAttribute && t.getAttribute('data-key')) {
+        e.preventDefault(); // Leertaste soll keine Bildschirm-Taste auslösen
+        return;
+      }
       if (k === 'Enter') {
         if (t && t.tagName === 'BUTTON' && !t.getAttribute('data-key')) return; // Buttons selbst auslösen lassen
         e.preventDefault();
@@ -329,12 +361,12 @@
         if (L.isLetter(ch)) { e.preventDefault(); press(ch); }
       }
     }, false);
-
-    var resizeT = 0;
-    w.addEventListener('resize', function () {
-      w.clearTimeout(resizeT);
-      resizeT = w.setTimeout(sizeBoard, 120);
+    doc.addEventListener('keyup', function (e) {
+      var t = e.target;
+      if ((e.key === ' ' || e.key === 'Spacebar') && t && t.getAttribute && t.getAttribute('data-key')) e.preventDefault();
     }, false);
+
+    G.onWidthChange(root, function () { baseH = 0; sizeBoard(); }, 120);
 
     state = store.load();
     if (!valid(state)) state = fresh();
