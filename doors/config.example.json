@@ -1,78 +1,267 @@
 {
-  "_comment": "Vorlage. Echte Version: doors/config.json (gitignored). Pfade in src/poster/image/images/assets sind relativ zu assets_dir. Jede benutzte Datei muss in 'assets' stehen (Datei oder Ordner mit '/').",
+  "_comment": "Vorlage. Echte Version: doors/config.json (gitignored). Pfade in src/poster/image/images/card_back/assets sind relativ zu assets_dir. Jede benutzte Datei muss in 'assets' stehen (Datei oder Ordner mit '/'). Parameter aller Templates: README.md.",
   "doors": {
     "1": {
       "template": "media",
       "title": "Hallo Schatzo!",
       "params": {
         "blocks": [
-          { "type": "text", "heading": "Willkommen im Adventskalender", "text": "Ab heute wartet jeden Tag ein kleines Türchen auf dich.\nHinter manchen steckt ein QR-Code, hinter anderen ein Gutschein.\n\nHör dir zuerst die Sprachnachricht an – da erkläre ich dir alles." },
-          { "type": "audio", "heading": "Sprachnachricht", "src": "ton.m4a", "caption": "Kopfhörer auf, Kakao in die Hand." },
-          { "type": "text", "text": "Bis morgen! (Na ja – bis übermorgen. Morgen ist Gutschein-Tag.)" }
+          {
+            "type": "text",
+            "heading": "Willkommen im Adventskalender",
+            "text": "Ab heute wartet jeden Tag ein kleines Türchen auf dich.\nHinter manchen steckt ein QR-Code, hinter anderen ein Gutschein.\n\nHör dir zuerst die Sprachnachricht an – da erkläre ich dir alles."
+          },
+          {
+            "type": "audio",
+            "heading": "Sprachnachricht",
+            "src": "ton.m4a",
+            "caption": "Kopfhörer auf, Kakao in die Hand."
+          },
+          {
+            "type": "text",
+            "text": "Bis morgen! (Na ja – bis übermorgen. Morgen ist Gutschein-Tag.)"
+          }
         ]
       },
-      "assets": ["ton.m4a"]
+      "assets": [
+        "ton.m4a"
+      ]
     },
     "3": {
       "template": "quiz",
       "title": "Wie gut kennst du uns?",
       "params": {
-        "intro": "Zehn Fragen über uns. Keine Sorge, du darfst raten.",
+        "intro": "Acht Fragen über uns zwei. Raten ist erlaubt, Schummeln auch – ich merk's eh nicht.\n(Beispielfragen – die echten kommen von Jakob.)",
+        "shuffle_options": true,
         "questions": [
-          { "q": "Wo hatten wir unser erstes Date?", "options": ["Im Kino", "Auf dem Weihnachtsmarkt", "Beim Italiener", "Im Park"], "answer": 2, "explain": "Pizza verbindet." },
-          { "q": "Wer hat zuerst „Ich liebe dich“ gesagt?", "options": ["Du", "Ich", "Gleichzeitig"], "answer": 0 }
+          {
+            "question": "Wo hatten wir unser erstes Date?",
+            "options": [
+              "Im Kino",
+              "Auf dem Weihnachtsmarkt",
+              "Beim Italiener",
+              "Im Park"
+            ],
+            "answer": 2,
+            "explain": "Pizza verbindet. (Beispiel)"
+          },
+          {
+            "question": "Wer hat zuerst „Ich liebe dich“ gesagt?",
+            "options": [
+              "Du",
+              "Ich",
+              "Gleichzeitig"
+            ],
+            "answer": 0,
+            "explain": "Und ich war sooo erleichtert."
+          },
+          {
+            "question": "Was ist auf diesem Foto zu sehen?",
+            "image": "motiv-03.jpg",
+            "options": [
+              "Unser erster Weihnachtsbaum",
+              "Ein Brokkoli",
+              "Der Baum vor deiner Tür"
+            ],
+            "answer": 0
+          },
+          {
+            "question": "Welches Lied läuft bei uns im Auto am häufigsten?",
+            "options": [
+              "Last Christmas",
+              "Lied B (Beispiel)",
+              "Lied C (Beispiel)",
+              "Das Navi"
+            ],
+            "answer": 0
+          },
+          {
+            "question": "Wie viele Kilometer liegen zwischen unseren Wohnungen?",
+            "options": [
+              "12",
+              "27",
+              "42",
+              "Zu viele"
+            ],
+            "answer": 3,
+            "explain": "Jeder einzelne ist zu viel."
+          },
+          {
+            "question": "Was bestellt Jakob immer beim Lieblings-Italiener?",
+            "options": [
+              "Pizza Margherita",
+              "Spaghetti Carbonara",
+              "Lasagne",
+              "Alles von deinem Teller"
+            ],
+            "answer": 3
+          },
+          {
+            "question": "Wer schläft auf der Couch zuerst ein?",
+            "options": [
+              "Du",
+              "Ich",
+              "Der Film"
+            ],
+            "answer": 0,
+            "explain": "Spätestens nach 20 Minuten. Liebevoll gemeint."
+          },
+          {
+            "question": "Was war unser erster gemeinsamer Ausflug?",
+            "options": [
+              "Ausflug A (Beispiel)",
+              "Ausflug B (Beispiel)",
+              "Ausflug C (Beispiel)",
+              "Ausflug D (Beispiel)"
+            ],
+            "answer": 1
+          }
         ],
-        "outro": { "perfect": "Volle Punktzahl – du kennst uns besser als ich!", "good": "Fast perfekt!", "low": "Wir müssen mehr Zeit miteinander verbringen. Gute Nachricht: wir tun das." }
-      }
+        "results": [
+          {
+            "min_score": 0,
+            "text": "Hm. Wir müssen dringend mehr Zeit miteinander verbringen. Gute Nachricht: genau das haben wir vor."
+          },
+          {
+            "min_score": 4,
+            "text": "Gar nicht schlecht! Du kennst uns ziemlich gut – den Rest üben wir beim nächsten Date."
+          },
+          {
+            "min_score": 7,
+            "text": "Wow, fast perfekt! Du hast offensichtlich gut aufgepasst."
+          },
+          {
+            "min_score": 8,
+            "text": "Volle Punktzahl! Du kennst uns besser als ich."
+          }
+        ],
+        "closing_text": "Morgen gibt's übrigens einen Gutschein. Nur so als Vorwarnung."
+      },
+      "assets": [
+        "motiv-03.jpg"
+      ]
     },
     "4": {
       "template": "media",
       "title": "Unser Jahr",
       "params": {
         "blocks": [
-          { "type": "text", "text": "Zwölf Monate, unzählige Momente – hier ein paar davon." },
-          { "type": "slideshow", "interval_ms": 5000, "images": [
-            { "src": "foto-1.jpg", "caption": "Januar: Neujahrsspaziergang" },
-            { "src": "foto-2.jpg", "caption": "März: Erster Ausflug ins Grüne" },
-            { "src": "foto-3.jpg", "caption": "Juni: Sommer, Sonne, Eis" },
-            { "src": "foto-4.jpg", "caption": "September: Urlaub" },
-            { "src": "foto-5.jpg", "caption": "November: Kuscheldecke-Saison" }
-          ] }
+          {
+            "type": "text",
+            "text": "Zwölf Monate, unzählige Momente – hier ein paar davon."
+          },
+          {
+            "type": "slideshow",
+            "interval_ms": 5000,
+            "images": [
+              {
+                "src": "foto-1.jpg",
+                "caption": "Januar: Neujahrsspaziergang"
+              },
+              {
+                "src": "foto-2.jpg",
+                "caption": "März: Erster Ausflug ins Grüne"
+              },
+              {
+                "src": "foto-3.jpg",
+                "caption": "Juni: Sommer, Sonne, Eis"
+              },
+              {
+                "src": "foto-4.jpg",
+                "caption": "September: Urlaub"
+              },
+              {
+                "src": "foto-5.jpg",
+                "caption": "November: Kuscheldecke-Saison"
+              }
+            ]
+          }
         ]
       },
-      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+      "assets": [
+        "foto-1.jpg",
+        "foto-2.jpg",
+        "foto-3.jpg",
+        "foto-4.jpg",
+        "foto-5.jpg"
+      ]
     },
     "6": {
       "template": "memory",
       "title": "Memory",
       "params": {
+        "intro": "Finde alle Paare! Am Anfang darfst du kurz spicken.",
         "pairs": 8,
-        "images": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"],
-        "win_text": "Gewonnen! Dein Gedächtnis ist fast so gut wie deine Umarmungen."
+        "images": [
+          "motiv-01.jpg",
+          "motiv-02.jpg",
+          "motiv-03.jpg",
+          "motiv-04.jpg",
+          "motiv-05.jpg",
+          "motiv-06.jpg",
+          "motiv-07.jpg",
+          "motiv-08.jpg"
+        ],
+        "peek_ms": 1500,
+        "show_moves": true,
+        "show_timer": false,
+        "win_text": "Gewonnen! Dein Gedächtnis ist fast so gut wie deine Umarmungen.\n\n(Hier stehen später unsere Fotos – Beispielbilder.)"
       },
-      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+      "assets": [
+        "motiv-01.jpg",
+        "motiv-02.jpg",
+        "motiv-03.jpg",
+        "motiv-04.jpg",
+        "motiv-05.jpg",
+        "motiv-06.jpg",
+        "motiv-07.jpg",
+        "motiv-08.jpg"
+      ]
     },
     "7": {
       "template": "media",
       "title": "Film ab!",
       "params": {
         "blocks": [
-          { "type": "video", "src": "video.mp4", "poster": "video-poster.jpg", "caption": "Ton an!" },
-          { "type": "text", "text": "Ich hoffe, du musstest ein bisschen lachen." }
+          {
+            "type": "video",
+            "src": "video.mp4",
+            "poster": "video-poster.jpg",
+            "caption": "Ton an!"
+          },
+          {
+            "type": "text",
+            "text": "Ich hoffe, du musstest ein bisschen lachen."
+          }
         ]
       },
-      "assets": ["video.mp4", "video-poster.jpg"]
+      "assets": [
+        "video.mp4",
+        "video-poster.jpg"
+      ]
     },
     "9": {
       "template": "wordle",
       "title": "Wörtchen-Rätsel",
       "params": {
+        "intro": "Drei Wörter, die nur wir verstehen. Grün = richtig, Gelb = steckt drin, aber woanders.\nUmlaute und ß gibt's auf der extra Tastenreihe.",
         "words": [
-          { "word": "KEKSE", "hint": "Ohne die geht kein Advent." },
-          { "word": "GLÜHWEIN", "hint": "Weihnachtsmarkt in flüssig." }
+          {
+            "word": "KEKSE",
+            "hint": "Ohne die geht kein Advent."
+          },
+          {
+            "word": "Grüße",
+            "hint": "Steht am Ende jeder Postkarte."
+          },
+          {
+            "word": "GLÜHWEIN",
+            "hint": "Weihnachtsmarkt in flüssig."
+          }
         ],
         "max_guesses": 6,
-        "win_text": "Geknackt!"
+        "allow_any_guess": true,
+        "win_text": "Alle geknackt! Du sprichst fließend Wir.\n\n(Beispielwörter – die echten Insider kommen von Jakob.)"
       }
     },
     "10": {
@@ -80,37 +269,130 @@
       "title": "Unser Soundtrack",
       "params": {
         "blocks": [
-          { "type": "text", "text": "Eine Playlist mit allen Liedern, die nach uns klingen." },
-          { "type": "link", "url": "https://open.spotify.com/", "label": "Playlist öffnen", "note": "Am besten laut. Und mit Tanzen." }
+          {
+            "type": "text",
+            "text": "Eine Playlist mit allen Liedern, die nach uns klingen."
+          },
+          {
+            "type": "link",
+            "url": "https://open.spotify.com/",
+            "label": "Playlist öffnen",
+            "note": "Am besten laut. Und mit Tanzen."
+          }
         ]
       }
     },
     "12": {
       "template": "puzzle",
       "title": "Puzzle-Zeit",
-      "params": { "mode": "slide", "image": "foto-2.jpg", "grid": 3, "win_text": "Perfekt zusammengesetzt – wie wir zwei." },
-      "assets": ["foto-2.jpg"]
+      "params": {
+        "intro": "Zieh die Teile aufs Brett – passt eins, rastet es ein.",
+        "mode": "jigsaw",
+        "image": "puzzle.jpg",
+        "grid": 4,
+        "show_preview": true,
+        "win_text": "Perfekt zusammengesetzt – wie wir zwei."
+      },
+      "assets": [
+        "puzzle.jpg"
+      ]
     },
     "13": {
       "template": "media",
       "title": "Weißt du noch?",
       "params": {
         "blocks": [
-          { "type": "yearsago", "date": "2023-12-13", "image": "foto-5.jpg", "text": "Genau an diesem Tag haben wir … (hier kommt die echte Geschichte hin)." }
+          {
+            "type": "yearsago",
+            "date": "2023-12-13",
+            "image": "foto-5.jpg",
+            "text": "Genau an diesem Tag haben wir … (hier kommt die echte Geschichte hin)."
+          }
         ]
       },
-      "assets": ["foto-5.jpg"]
+      "assets": [
+        "foto-5.jpg"
+      ]
     },
     "15": {
       "template": "quiz",
       "title": "Wer hat's gesagt?",
       "params": {
-        "intro": "Zitate aus unserem Chat. Wer war's?",
+        "intro": "Zitate aus unserem Chat. Wer war's – du, ich oder wir beide?\n(Beispielzitate.)",
+        "shuffle_questions": true,
         "questions": [
-          { "q": "„Nur noch eine Folge.“", "options": ["Jakob", "Sandy"], "answer": 1 },
-          { "q": "„Ich hab keinen Hunger.“ (5 Minuten später: Pizza)", "options": ["Jakob", "Sandy"], "answer": 0 }
+          {
+            "quote": "Nur noch eine Folge.",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 2,
+            "explain": "Spoiler: Es waren nie nur eine Folge."
+          },
+          {
+            "quote": "Ich hab keinen Hunger.",
+            "question": "Wer hat's gesagt – fünf Minuten vor der Pizza?",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 0
+          },
+          {
+            "quote": "Bin in fünf Minuten fertig!",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 1,
+            "explain": "Fünf Minuten sind dehnbar."
+          },
+          {
+            "quote": "Hast du meinen Schlüssel gesehen?",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 0
+          },
+          {
+            "quote": "Gute Nacht, schlaf schön ❤️",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 2
+          },
+          {
+            "quote": "Ich bin nicht müde, ich ruh nur die Augen aus.",
+            "options": [
+              "Jakob",
+              "Sandy",
+              "Beide"
+            ],
+            "answer": 1
+          }
         ],
-        "outro": { "perfect": "Chat-Expertin!", "good": "Gut aufgepasst!", "low": "Hast du den Chat überhaupt gelesen?" }
+        "results": [
+          {
+            "min_score": 0,
+            "text": "Hast du unseren Chat überhaupt gelesen? 😄"
+          },
+          {
+            "min_score": 3,
+            "text": "Solide! Ein paar Zitate sind ja auch wirklich gemein."
+          },
+          {
+            "min_score": 5,
+            "text": "Chat-Expertin! Dir entgeht nichts."
+          }
+        ]
       }
     },
     "16": {
@@ -118,8 +400,14 @@
       "title": "Kreuzworträtsel",
       "params": {
         "words": [
-          { "answer": "MISTELZWEIG", "clue": "Darunter wird geküsst" },
-          { "answer": "SCHATZO", "clue": "Du" }
+          {
+            "answer": "MISTELZWEIG",
+            "clue": "Darunter wird geküsst"
+          },
+          {
+            "answer": "SCHATZO",
+            "clue": "Du"
+          }
         ],
         "grid": "wird in M3 vom Kreuzworträtsel-Generator erzeugt"
       }
@@ -128,46 +416,169 @@
       "template": "memory",
       "title": "Memory für Profis",
       "params": {
+        "intro": "Die schwere Variante: 12 Paare, kein Spicken, und die Uhr läuft.",
         "pairs": 12,
-        "difficulty": "schwer",
-        "images": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"],
-        "win_text": "Respekt. Das war die schwere Variante."
+        "images": [
+          "motiv-01.jpg",
+          "motiv-02.jpg",
+          "motiv-03.jpg",
+          "motiv-04.jpg",
+          "motiv-05.jpg",
+          "motiv-06.jpg",
+          "motiv-07.jpg",
+          "motiv-08.jpg",
+          "motiv-09.jpg",
+          "motiv-10.jpg",
+          "motiv-11.jpg",
+          "motiv-12.jpg"
+        ],
+        "peek_ms": 0,
+        "show_moves": true,
+        "show_timer": true,
+        "win_text": "Respekt. Das war die schwere Variante – und du hast sie geschafft."
       },
-      "assets": ["foto-1.jpg", "foto-2.jpg", "foto-3.jpg", "foto-4.jpg", "foto-5.jpg"]
+      "assets": [
+        "motiv-01.jpg",
+        "motiv-02.jpg",
+        "motiv-03.jpg",
+        "motiv-04.jpg",
+        "motiv-05.jpg",
+        "motiv-06.jpg",
+        "motiv-07.jpg",
+        "motiv-08.jpg",
+        "motiv-09.jpg",
+        "motiv-10.jpg",
+        "motiv-11.jpg",
+        "motiv-12.jpg"
+      ]
     },
     "19": {
       "template": "media",
       "title": "Noch was auf die Ohren",
       "params": {
         "blocks": [
-          { "type": "audio", "src": "ton.m4a", "caption": "Für die kalten Abende." },
-          { "type": "image", "src": "foto-4.jpg", "caption": "Erinnerst du dich?" }
+          {
+            "type": "audio",
+            "src": "ton.m4a",
+            "caption": "Für die kalten Abende."
+          },
+          {
+            "type": "image",
+            "src": "foto-4.jpg",
+            "caption": "Erinnerst du dich?"
+          }
         ]
       },
-      "assets": ["ton.m4a", "foto-4.jpg"]
+      "assets": [
+        "ton.m4a",
+        "foto-4.jpg"
+      ]
     },
     "21": {
       "template": "quiz",
       "title": "Quiz, Teil 2",
       "params": {
-        "intro": "Die Rückrunde. Diesmal schwerer.",
+        "intro": "Die Rückrunde. Diesmal ein bisschen schwerer.\n(Beispielfragen.)",
+        "shuffle_options": true,
         "questions": [
-          { "q": "Welches Datum ist unser Jahrestag?", "options": ["Variante A", "Variante B", "Variante C"], "answer": 0 }
+          {
+            "question": "An welchem Tag ist unser Jahrestag?",
+            "options": [
+              "Datum A (Beispiel)",
+              "Datum B (Beispiel)",
+              "Datum C (Beispiel)"
+            ],
+            "answer": 0
+          },
+          {
+            "question": "Welches Motiv ist das?",
+            "image": "motiv-09.jpg",
+            "options": [
+              "Eine Kerze",
+              "Ein Leuchtturm",
+              "Eine Zuckerstange"
+            ],
+            "answer": 0,
+            "explain": "Für die gemütlichen Abende."
+          },
+          {
+            "question": "Wohin ging unsere erste gemeinsame Reise?",
+            "options": [
+              "Ort A (Beispiel)",
+              "Ort B (Beispiel)",
+              "Ort C (Beispiel)",
+              "Ort D (Beispiel)"
+            ],
+            "answer": 2
+          },
+          {
+            "question": "Welches Essen haben wir zusammen am öftesten gekocht?",
+            "options": [
+              "Pasta",
+              "Curry",
+              "Raclette",
+              "Tiefkühlpizza zählt nicht"
+            ],
+            "answer": 0
+          },
+          {
+            "question": "Wer gewinnt bei uns meistens bei Brettspielen?",
+            "options": [
+              "Du",
+              "Ich",
+              "Das Spiel"
+            ],
+            "answer": 0,
+            "explain": "Ich lass dich natürlich nicht gewinnen. Ehrlich."
+          },
+          {
+            "question": "Was wünsche ich mir für nächstes Jahr am meisten?",
+            "options": [
+              "Mehr Zeit mit dir",
+              "Einen Hund",
+              "Weniger Montage",
+              "Alles davon"
+            ],
+            "answer": 3
+          }
         ],
-        "outro": { "perfect": "Unschlagbar!", "good": "Stark!", "low": "Revanche nächstes Jahr?" }
-      }
+        "results": [
+          {
+            "min_score": 0,
+            "text": "Revanche nächstes Jahr? Ich bin dabei."
+          },
+          {
+            "min_score": 3,
+            "text": "Stark! Die Rückrunde war ja auch fies."
+          },
+          {
+            "min_score": 6,
+            "text": "Unschlagbar! Auch die Rückrunde: perfekt."
+          }
+        ],
+        "closing_text": "Noch drei Türchen. Es wird spannend …"
+      },
+      "assets": [
+        "motiv-09.jpg"
+      ]
     },
     "22": {
       "template": "wrapped",
       "title": "Schatzo Wrapped",
-      "params": { "stats": "stats.json", "year": 2026 }
+      "params": {
+        "stats": "stats.json",
+        "year": 2026
+      }
     },
     "23": {
       "template": "media",
       "title": "Psst …",
       "params": {
         "blocks": [
-          { "type": "teaser", "text": "Morgen." }
+          {
+            "type": "teaser",
+            "text": "Morgen."
+          }
         ]
       }
     },

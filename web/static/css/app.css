@@ -511,7 +511,10 @@ a { color: var(--gold-400); }
   display: block; font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1.05;
   color: var(--cran-700); font-variant-numeric: tabular-nums;
 }
-.cd__l { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-500); }
+.cd__l {
+  display: block; margin-top: 2px; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-500); white-space: nowrap; overflow: hidden; text-overflow: clip;
+}
 .cheeky {
   max-width: 26ch; margin: 26px auto 10px;
   font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 22px; line-height: 1.35;
@@ -570,4 +573,5 @@ a { color: var(--gold-400); }
   .card { padding: 28px 28px; }
   .countdown { gap: 12px; }
   .cd__n { font-size: 42px; }
+  .cd__l { font-size: 11.5px; letter-spacing: .1em; }
 }

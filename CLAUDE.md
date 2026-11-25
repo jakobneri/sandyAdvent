@@ -26,6 +26,24 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
   baut direkt auf dem Pi, zusätzlich GitHub Action mit ARM64-Binary als Release-Artefakt,
   `docs/deploy.md` als Schritt-für-Schritt-Anleitung.
 
+## Pi „archimedes“ (Stand 25.11.2026, von Jakob)
+- Raspberry Pi 5, 8 GB, NVMe-SSD, Raspberry Pi OS, headless, LAN-IP **192.168.188.22**
+  (IP nur in `config.json`/Doku-Beispielen, nie im Code). SSH als `jakob`.
+- Node.js **20.x** (NodeSource) – zu alt für Angular 22 (braucht ≥ 22.22 bzw. ≥ 24.15).
+- Belegte Ports (vor jedem neuen Dienst `ss -tlnp` prüfen): 53 (AdGuard DNS), 3000 (Cockpit),
+  3002 (Homepage), 5678 (n8n), 8080 (Traefik aus n8n-Compose), 8181 (Kiwix), 8888 (AdGuard UI),
+  9119 (Hermes), 11443 (UniFi OS), 11444 (nginx unifi-proxy, Container). Geplant: 8081 sandyAdvent,
+  8082 schatzogram. Wer 80/443 hält, ist noch zu klären.
+- Podman + Docker vorhanden; unsere Dienste laufen trotzdem nativ als systemd-Units.
+- DNS im LAN: **UniFi EX7** (Gateway). Pi-IP per **DHCP-Reservierung** im EX7 fest. Lokaler DNS-Eintrag
+  `sg.n3ri.com → 192.168.188.22` im EX7 ist noch anzulegen (Anleitung in M4-`docs/deploy.md`), zusätzlich
+  zum Cloudflare-Eintrag. AdGuard Home auf dem Pi ist nicht mehr der LAN-Resolver.
+- `n3ri.com` liegt im selben Cloudflare-Account wie `nerifeige.com` (Jakob hat Kontrolle) → API-Token
+  für DNS-01 nur mit „Zone → DNS → Edit“ auf `n3ri.com`.
+- QR-Codes/Tokens werden später erzeugt (Entscheidung 25.11.).
+- cloudflared-Tunnel existiert für andere Dienste (nerifeige.com) – sandyAdvent/schatzogram
+  bekommen **keinen** Tunnel-Eintrag (nur Heim-WLAN).
+
 ## Konfiguration
 - `config.json` (gitignored; Vorlage `config.example.json`): `listen`, `base_url`, `year`,
   `doors_config`, `assets_dir`, `tokens` (Token → Tag), `schatzogram.welcome_url`,
@@ -48,6 +66,11 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 - Öffnungs-Log als JSONL (Tag, Zeitstempel, User-Agent) + `/admin` mit Basic Auth (M4).
 - Auf jedem Türchen dezenter Banner **„Schatzogram – noch X Tage“** (bis 24.12.2026 00:00 Berlin),
   **ohne** zu erklären, was das ist. Optik aus den gemeinsamen Brand-Tokens.
+  **Nicht** auf Türchen 23 und 24 (dort übernimmt Teaser bzw. Reveal).
+- Alle Zeitangaben korrekt pluralisiert („1 Tag“, „2 Tage“, „1 Stunde“, „1 Minute“, „1 Sekunde“) –
+  Countdown und Banner.
+- Außerhalb des Dev-Modus **verweigert der Server den Start**, solange `EXAMPLE-`-Tokens in der
+  Config stehen.
 
 ## Türchen (doors/config.json)
 | Tag | Template | Inhalt |
@@ -59,11 +82,11 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 | 7 | media | Video |
 | 9 | wordle | Wordle mit Insider-Wörtern |
 | 10 | media | Playlist-Link |
-| 12 | puzzle | Foto-Puzzle |
+| 12 | puzzle | Foto-Puzzle (Modus jigsaw) |
 | 13 | media | „Heute vor X Jahren“ |
 | 15 | quiz | „Wer hat's gesagt?“ |
 | 16 | crossword | Kreuzworträtsel mit Insider-Begriffen |
-| 18 | memory oder puzzle | schwerere Variante (offen, Jakob entscheidet) |
+| 18 | memory | schwerere Memory-Variante (mehr Paare) – entschieden 24.11. |
 | 19 | media | Sprachnachricht |
 | 21 | quiz | Quiz Teil 2 |
 | 22 | wrapped | „Schatzo Wrapped“ im Spotify-Wrapped-Stil |
@@ -74,7 +97,8 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 - **media**: Audio, Video, Slideshow, Text, Link – frei kombinierbar (Liste von Blöcken).
 - **quiz**: Multiple Choice, Score, Abschlusstext.
 - **memory**: Paaranzahl konfigurierbar.
-- **wordle**: eigene Wörter, variable Länge, Umlaute.
+- **wordle**: eigene Wörter, variable Länge, Umlaute. Verlorene Runde: Wort wird aufgedeckt, weiter zur
+  nächsten Runde (kein zweiter Versuch); Tipp nur per „Tipp anzeigen“ (bestätigt 25.11.).
 - **puzzle**: Schiebe- oder Jigsaw-Puzzle aus einem Foto.
 - **crossword**: rendert Raster-JSON, Eingabe per Handy-Tastatur.
 - **wrapped**: animierte Slides aus `stats.json`.

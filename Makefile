@@ -10,7 +10,7 @@ QR_OUT   ?= out/qr-codes.pdf
 SIZE_MM  ?= 40
 QR_TEST  ?=
 
-.PHONY: dev run build test qr tokens check fmt vet sync-brand example-assets clean
+.PHONY: dev run build test test-js qr tokens check fmt vet sync-brand example-assets clean
 
 dev: ## Server im Dev-Modus (ADVENT_NOW, /dev/preview) auf http://localhost:8081
 	ADVENT_DEV=1 ADVENT_CONFIG=$(CONFIG) $(GO) run ./cmd/sandyadvent serve
@@ -21,11 +21,16 @@ run: ## Server wie in Produktion (config.json)
 build: ## statisches Binary nach bin/ (GOARCH=arm64 make build für den Pi)
 	CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -trimpath -ldflags="-s -w" -o $(BIN) ./cmd/sandyadvent
 
-test:
+test: ## Go-Tests + JS-Logik-Tests (node --test, übersprungen ohne Node)
 	$(GO) test ./...
+	@if command -v node >/dev/null 2>&1; then node --test tests/js/*.test.mjs; \
+	else echo "node nicht gefunden – JS-Tests (tests/js) übersprungen"; fi
 
-check: ## config + Türchen-Config prüfen
-	$(GO) run ./cmd/sandyadvent check -config $(CONFIG)
+test-js: ## nur die JS-Logik-Tests
+	node --test tests/js/*.test.mjs
+
+check: ## config + Türchen-Config prüfen (die Vorlage mit EXAMPLE-Tokens im Dev-Modus)
+	$(if $(filter config.example.json,$(CONFIG)),ADVENT_DEV=1 )$(GO) run ./cmd/sandyadvent check -config $(CONFIG)
 
 qr: ## QR-PDF: make qr BASE_URL=http://<Pi-IP>  (Testdruck mit localhost/Beispiel-Tokens: QR_TEST=1)
 	$(GO) run ./tools/qrpdf -config $(CONFIG) $(if $(BASE_URL),-base-url $(BASE_URL)) $(if $(QR_TEST),-test) -size-mm $(SIZE_MM) -out $(QR_OUT)
