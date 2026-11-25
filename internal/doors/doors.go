@@ -28,16 +28,17 @@ var Templates = map[string]bool{
 // Implemented reports whether a template has a real implementation yet.
 func Implemented(template string) bool {
 	switch template {
-	case "media", "quiz", "memory", "wordle", "puzzle":
+	case "media", "quiz", "memory", "wordle", "puzzle", "crossword", "wrapped":
 		return true
 	}
 	return false
 }
 
-// IsGame reports whether a template is one of the interactive games (M2).
+// IsGame reports whether a template is rendered by the game shell: the
+// interactive games (M2), the crossword and the wrapped story (M3).
 func IsGame(template string) bool {
 	switch template {
-	case "quiz", "memory", "wordle", "puzzle":
+	case "quiz", "memory", "wordle", "puzzle", "crossword", "wrapped":
 		return true
 	}
 	return false
@@ -58,6 +59,9 @@ type Door struct {
 	Memory *MemoryParams `json:"-"`
 	Wordle *WordleParams `json:"-"`
 	Puzzle *PuzzleParams `json:"-"`
+
+	Crossword *CrosswordParams `json:"-"`
+	Wrapped   *WrappedParams   `json:"-"`
 }
 
 // File is the on-disk structure.
@@ -212,6 +216,10 @@ func (d *Door) parseParams() error {
 		d.Wordle, err = ParseWordle(d.Params)
 	case "puzzle":
 		d.Puzzle, err = ParsePuzzle(d.Params)
+	case "crossword":
+		d.Crossword, err = ParseCrossword(d.Params)
+	case "wrapped":
+		d.Wrapped, err = ParseWrapped(d.Params)
 	}
 	return err
 }
@@ -227,6 +235,10 @@ func (d *Door) AssetRefs() []string {
 		return d.Memory.AssetRefs()
 	case d.Puzzle != nil:
 		return d.Puzzle.AssetRefs()
+	case d.Crossword != nil:
+		return d.Crossword.AssetRefs()
+	case d.Wrapped != nil:
+		return d.Wrapped.AssetRefs()
 	}
 	return nil
 }

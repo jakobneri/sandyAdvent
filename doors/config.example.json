@@ -399,18 +399,15 @@
       "template": "crossword",
       "title": "Kreuzworträtsel",
       "params": {
-        "words": [
-          {
-            "answer": "MISTELZWEIG",
-            "clue": "Darunter wird geküsst"
-          },
-          {
-            "answer": "SCHATZO",
-            "clue": "Du"
-          }
-        ],
-        "grid": "wird in M3 vom Kreuzworträtsel-Generator erzeugt"
-      }
+        "intro": "Lauter Wörter, die nur wir zwei verstehen. Tippe auf ein Kästchen oder einen Hinweis und schreib los – nochmal tippen wechselt die Richtung.\n(Beispielwörter – die echten kommen von Jakob.)",
+        "grid": "kreuzwort.json",
+        "allow_check": true,
+        "allow_reveal_letter": false,
+        "closing_text": "Du sprichst fließend Schatzo. Morgen gibt es wieder einen Gutschein!"
+      },
+      "assets": [
+        "kreuzwort.json"
+      ]
     },
     "18": {
       "template": "memory",
@@ -566,9 +563,14 @@
       "template": "wrapped",
       "title": "Schatzo Wrapped",
       "params": {
+        "intro": "Ein Jahr voller Nachrichten, Emojis und Gute-Nacht-Grüße – einmal zusammengefasst.\n(Beispielzahlen aus einem erfundenen Chat.)",
         "stats": "stats.json",
-        "year": 2026
-      }
+        "title": "Schatzo Wrapped 2026",
+        "outro_text": "Danke für jede einzelne Nachricht. Auf noch ganz viele mehr – ich hab dich lieb!"
+      },
+      "assets": [
+        "stats.json"
+      ]
     },
     "23": {
       "template": "media",

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "width": 13,
+  "height": 13,
+  "cells": [
+    [null,null,null,null,null,null,"S",null,null,null,null,null,null],
+    [null,"P","L","Ä","T","Z","C","H","E","N",null,null,null],
+    [null,null,null,null,null,null,"H",null,null,null,null,null,null],
+    ["Z",null,null,"K","A","K","A","O",null,null,null,null,null],
+    ["I",null,null,null,null,null,"T",null,"L",null,null,null,"G"],
+    ["M","I","S","T","E","L","Z","W","E","I","G",null,"L"],
+    ["T",null,"O",null,null,null,"O",null,"B",null,null,null,"Ü"],
+    ["S",null,"C",null,"G",null,null,null,"K",null,null,null,"H"],
+    ["T",null,"K","E","R","Z","E",null,"U",null,null,null,"W"],
+    ["E",null,"E",null,"Ü",null,null,"S","C","H","N","E","E"],
+    ["R",null,"N",null,"ß",null,null,null,"H",null,null,null,"I"],
+    ["N",null,null,"R","E","N","T","I","E","R",null,null,"N"],
+    [null,null,null,null,null,null,null,null,"N",null,null,null,null]
+  ],
+  "entries": [
+    {"number":1,"direction":"down","row":0,"col":6,"answer":"SCHATZO","clue":"So nenne ich dich am liebsten"},
+    {"number":2,"direction":"across","row":1,"col":1,"answer":"PLÄTZCHEN","clue":"Wird im Advent gebacken (und sofort genascht)"},
+    {"number":3,"direction":"down","row":3,"col":0,"answer":"ZIMTSTERN","clue":"Weihnachtsgebäck mit Zuckerguss"},
+    {"number":4,"direction":"across","row":3,"col":3,"answer":"KAKAO","clue":"Heiß, mit Sahne und Marshmallows"},
+    {"number":5,"direction":"down","row":4,"col":8,"answer":"LEBKUCHEN","clue":"Herz, das man essen kann"},
+    {"number":6,"direction":"down","row":4,"col":12,"answer":"GLÜHWEIN","clue":"Heißgetränk vom Weihnachtsmarkt"},
+    {"number":7,"direction":"across","row":5,"col":0,"answer":"MISTELZWEIG","clue":"Darunter wird an Weihnachten geküsst"},
+    {"number":8,"direction":"down","row":5,"col":2,"answer":"SOCKEN","clue":"Klassisches Geschenk, aber warm"},
+    {"number":9,"direction":"down","row":7,"col":4,"answer":"GRÜßE","clue":"Schicke ich dir jeden Morgen (Beispiel)"},
+    {"number":10,"direction":"across","row":8,"col":2,"answer":"KERZE","clue":"Brennt am Adventskranz"},
+    {"number":11,"direction":"across","row":9,"col":7,"answer":"SCHNEE","clue":"Fällt hoffentlich an Heiligabend"},
+    {"number":12,"direction":"across","row":11,"col":3,"answer":"RENTIER","clue":"Zieht den Schlitten"}
+  ]
+}

@@ -26,10 +26,10 @@ Ein Branch pro Meilenstein (`feature/mN`), PR gegen `main`.
 - [x] Fix: Start außerhalb Dev-Modus mit EXAMPLE-Tokens verweigern
 
 ## M3 – Rätsel & Wrapped (Branch `feature/m3`)
-- [ ] crossword-Template (Raster-JSON, Handy-Tastatur) – Tag 16
-- [ ] Kreuzworträtsel-Generator (`tools/crossword`)
-- [ ] wrapped-Template (animierte Slides aus `stats.json`) – Tag 22
-- [ ] WhatsApp-Parser (`tools/waparse`), Android + iOS, deutsches Locale, synthetische Beispiel-Exporte
+- [x] crossword-Template (Raster-JSON, Handy-Tastatur) – Tag 16
+- [x] Kreuzworträtsel-Generator (`tools/crossword`)
+- [x] wrapped-Template (animierte Slides aus `stats.json`) – Tag 22
+- [x] WhatsApp-Parser (`tools/waparse`), Android + iOS, deutsches Locale, synthetische Beispiel-Exporte
 
 ## M4 – Reveal, Admin, Deployment (Branch `feature/m4`)
 - [ ] reveal-Template (Tag 24) mit Button zu `schatzogram.welcome_url` (siehe `docs/interface.md`)

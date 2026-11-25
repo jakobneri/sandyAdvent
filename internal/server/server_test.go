@@ -25,7 +25,7 @@ const doorsJSON = `{"doors":{
       {"type":"slideshow","images":[{"src":"fotos/a.jpg","caption":"A"},{"src":"fotos/b.jpg"}]},
       {"type":"link","url":"https://example.org/x","label":"Link"},{"type":"yearsago","date":"2023-12-01"}]}},
  "3":{"template":"quiz","title":"Quiz","params":{"questions":[{"question":"<i>Wer?</i>","options":["Du","Ich"],"answer":0}]}},
- "16":{"template":"crossword","title":"Rätsel"},
+ "16":{"template":"crossword","title":"Rätsel","assets":["kw.json"],"params":{"grid":"kw.json"}},
  "9":{"template":"media","title":"Später","assets":["ton.m4a"],"params":{"blocks":[{"type":"audio","src":"ton.m4a"}]}},
  "23":{"template":"media","title":"Teaser","params":{"blocks":[{"type":"teaser"}]}},
  "24":{"template":"reveal","title":"Reveal"}
@@ -182,9 +182,9 @@ func TestDoorRendering(t *testing.T) {
 		!strings.Contains(h.Get("Content-Security-Policy"), "default-src 'self'") {
 		t.Errorf("Header: %v", h)
 	}
-	// placeholder template (not implemented yet)
-	if b := f.get(t, "/d/tokenDay16").Body.String(); !strings.Contains(b, "Dieses Türchen wird noch gebastelt") {
-		t.Error("Platzhalter fehlt")
+	// crossword with its grid file still missing: friendly message, no game data
+	if b := f.get(t, "/d/tokenDay16").Body.String(); !strings.Contains(b, "noch nicht fertig gedruckt") || strings.Contains(b, `id="game-data"`) || strings.Contains(b, "crossword.js") {
+		t.Error("fehlendes Raster: Hinweis fehlt")
 	}
 	// game template: shell + JSON data (escaped) + scripts
 	b3 := f.get(t, "/d/tokenDay03").Body.String()
@@ -212,6 +212,10 @@ func TestDoorRendering(t *testing.T) {
 	f.clock.T = berlin(2026, 12, 24, 0, 0, 1)
 	if b := f.get(t, "/d/tokenDay24").Body.String(); strings.Contains(b, `class="sg-banner"`) {
 		t.Error("Tag 24 darf keinen Banner zeigen")
+	}
+	// placeholder template (reveal: M4)
+	if b := f.get(t, "/d/tokenDay24").Body.String(); !strings.Contains(b, "Dieses Türchen wird noch gebastelt") {
+		t.Error("Platzhalter fehlt")
 	}
 	if b := f.get(t, "/d/tokenDay01").Body.String(); !strings.Contains(b, "Schatzogram – heute") {
 		t.Error("Banner 'heute' fehlt")

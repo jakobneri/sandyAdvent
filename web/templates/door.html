@@ -1,6 +1,9 @@
 {{define "head"}}<link rel="stylesheet" href="{{static "brand/tokens.css"}}">
-{{- if .Game}}
-<link rel="stylesheet" href="{{static "css/games.css"}}">{{end}}{{end}}
+{{- with .Game}}
+<link rel="stylesheet" href="{{static "css/games.css"}}">
+{{- range .Styles}}
+<link rel="stylesheet" href="{{static .}}">
+{{- end}}{{end}}{{end}}
 
 {{define "content"}}
 <div class="door-intro" aria-hidden="true" data-intro>
@@ -26,8 +29,8 @@
 {{end}}
 
 {{define "scripts"}}<script src="{{static "js/door.js"}}" defer></script>
-{{- with .Game}}
-<script src="{{static "js/game.js"}}" defer></script>
+{{- with .Game}}{{if not .Error}}
+<script src="{{static "js/game.js"}}" defer></script>{{end}}
 {{- range .Scripts}}
 <script src="{{static .}}" defer></script>
 {{- end}}

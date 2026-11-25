@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -164,5 +166,73 @@ func TestCountdownPlural(t *testing.T) {
 		if !strings.Contains(b, want) {
 			t.Errorf("fehlt: %s", want)
 		}
+	}
+}
+
+func TestExampleCrosswordAndWrappedData(t *testing.T) {
+	f, cfg, _ := exampleServer(t, true)
+	body := func(path string) string { return f.get(t, path).Body.String() }
+	data := func(b string) map[string]any {
+		t.Helper()
+		m := gameDataRE.FindStringSubmatch(b)
+		if m == nil {
+			t.Fatal("game-data fehlt")
+		}
+		var d map[string]any
+		must(t, json.Unmarshal([]byte(m[1]), &d))
+		return d
+	}
+	b16 := body("/d/" + cfg.TokenForDay(16))
+	for _, want := range []string{"js/crossword-logic.js", "js/crossword.js", `data-game="crossword"`} {
+		if !strings.Contains(b16, want) {
+			t.Errorf("Tag 16: %q fehlt", want)
+		}
+	}
+	d := data(b16)
+	if d["width"].(float64) < 5 || len(d["cells"].([]any)) != int(d["height"].(float64)) || d["allow_check"] != true || d["allow_reveal_letter"] != false {
+		t.Errorf("Tag 16: %v", d)
+	}
+	entries := d["entries"].([]any)
+	first := entries[0].(map[string]any)
+	if first["number"].(float64) != 1 || first["clue"] == "" {
+		t.Errorf("Tag 16 Einträge: %v", first)
+	}
+
+	b22 := body("/d/" + cfg.TokenForDay(22))
+	for _, want := range []string{"js/wrapped-logic.js", "js/wrapped.js", "css/wrapped.css", `data-game="wrapped"`} {
+		if !strings.Contains(b22, want) {
+			t.Errorf("Tag 22: %q fehlt", want)
+		}
+	}
+	w := data(b22)
+	st := w["stats"].(map[string]any)
+	// clock: 24.12.2026; since 2024-02-14 → 1044 days
+	if st["daysTogether"].(float64) != 1044 || st["asOf"] != "2026-12-24" || w["title"] != "Schatzo Wrapped 2026" {
+		t.Errorf("Tag 22: %v %v %v", st["daysTogether"], st["asOf"], w["title"])
+	}
+	if slides := w["slides"].([]any); len(slides) != len(doors.WrappedDefaultOrder) {
+		t.Errorf("Slides %v", slides)
+	}
+	// dev preview before the 22nd counts up to the door date
+	f.clock.T = berlin(2026, 12, 1, 12, 0, 0)
+	st = data(body("/dev/door/22"))["stats"].(map[string]any)
+	if st["daysTogether"].(float64) != 1042 || st["asOf"] != "2026-12-22" {
+		t.Errorf("Vorschau: %v %v", st["daysTogether"], st["asOf"])
+	}
+}
+
+// A new crossword file resets the saved progress (key includes the file).
+func TestCrosswordKeyFollowsFile(t *testing.T) {
+	dir := t.TempDir()
+	reg, err := doors.Parse([]byte(`{"doors":{"16":{"template":"crossword","title":"x","assets":["kw.json"],"params":{"grid":"kw.json"}}}}`))
+	must(t, err)
+	grid := `{"version":1,"width":2,"height":1,"cells":[["O","H"]],"entries":[{"number":1,"direction":"across","row":0,"col":0,"answer":"OH","clue":"Ah"}]}`
+	must(t, os.WriteFile(filepath.Join(dir, "kw.json"), []byte(grid), 0o644))
+	env := gameEnv{asset: func(s string) string { return s }, assetsDir: dir, year: 2026}
+	k1 := buildGame(reg.Get(16), env).Key
+	must(t, os.WriteFile(filepath.Join(dir, "kw.json"), []byte(strings.Replace(grid, "Ah", "Oh", 1)), 0o644))
+	g := buildGame(reg.Get(16), env)
+	if g.Error != "" || g.Key == k1 || !strings.HasPrefix(k1, "sa-game-16-") {
+		t.Fatalf("%q %q %q", k1, g.Key, g.Error)
 	}
 }

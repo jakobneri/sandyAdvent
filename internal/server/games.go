@@ -4,8 +4,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"time"
 
+	"github.com/jakobneri/sandyadvent/internal/advent"
+	"github.com/jakobneri/sandyadvent/internal/crossword"
 	"github.com/jakobneri/sandyadvent/internal/doors"
+	"github.com/jakobneri/sandyadvent/internal/waparse"
 )
 
 // gameView is the server-rendered shell of a game door. The game itself is
@@ -16,6 +20,9 @@ type gameView struct {
 	Intro   [][]string // paragraphs
 	Data    any
 	Scripts []string // static paths, loaded after js/game.js
+	Styles  []string // extra static CSS, loaded after css/games.css
+	Error   string   // data file missing/invalid: friendly message instead of the game
+	err     error    // the reason, for the log
 }
 
 type quizClientQuestion struct {
@@ -59,14 +66,47 @@ type puzzleClient struct {
 	WinText     string `json:"win_text,omitempty"`
 }
 
-// gameKey is stable per day and params, independent of the token, so the
-// same progress applies to /d/{token} and the dev preview.
-func gameKey(door *doors.Door) string {
-	sum := sha256.Sum256(append([]byte(door.Template+"\x00"), door.Params...))
-	return fmt.Sprintf("sa-game-%d-%s", door.Day, hex.EncodeToString(sum[:])[:10])
+type crosswordClient struct {
+	Width       int               `json:"width"`
+	Height      int               `json:"height"`
+	Cells       [][]*string       `json:"cells"`
+	Entries     []crossword.Entry `json:"entries"`
+	AllowCheck  bool              `json:"allow_check"`
+	AllowReveal bool              `json:"allow_reveal_letter"`
+	ClosingText string            `json:"closing_text,omitempty"`
 }
 
-func buildGame(door *doors.Door, asset func(string) string) *gameView {
+type wrappedClient struct {
+	Title     string               `json:"title"`
+	OutroText string               `json:"outro_text,omitempty"`
+	Slides    []doors.WrappedSlide `json:"slides"`
+	Stats     *waparse.Stats       `json:"stats"`
+}
+
+// gameKey is stable per day and params, independent of the token, so the
+// same progress applies to /d/{token} and the dev preview. extra (e.g. the
+// crossword file) is hashed in as well: a new grid starts fresh.
+func gameKey(door *doors.Door, extra ...[]byte) string {
+	h := sha256.New()
+	h.Write([]byte(door.Template + "\x00"))
+	h.Write(door.Params)
+	for _, e := range extra {
+		h.Write([]byte{0})
+		h.Write(e)
+	}
+	return fmt.Sprintf("sa-game-%d-%s", door.Day, hex.EncodeToString(h.Sum(nil))[:10])
+}
+
+// gameEnv is what building a game view needs besides the door.
+type gameEnv struct {
+	asset     func(string) string // asset path -> URL below the door's asset route
+	assetsDir string
+	now       time.Time
+	year      int
+}
+
+func buildGame(door *doors.Door, env gameEnv) *gameView {
+	asset := env.asset
 	g := &gameView{Kind: door.Template, Key: gameKey(door)}
 	switch {
 	case door.Quiz != nil:
@@ -107,6 +147,46 @@ func buildGame(door *doors.Door, asset func(string) string) *gameView {
 		g.Intro = paragraphs(p.Intro)
 		g.Data = puzzleClient{Mode: p.Mode, Image: asset(p.Image), Grid: p.Grid, ShowPreview: p.Preview(), WinText: p.WinText}
 		g.Scripts = []string{"js/puzzle-logic.js", "js/puzzle.js"}
+	case door.Crossword != nil:
+		p := door.Crossword
+		g.Intro = paragraphs(p.Intro)
+		r, raw, err := p.Raster(env.assetsDir)
+		if err != nil {
+			g.Error, g.err = "Das Kreuzworträtsel ist noch nicht fertig gedruckt – schau später nochmal vorbei.", err
+			return g
+		}
+		g.Key = gameKey(door, raw)
+		entries := append([]crossword.Entry(nil), r.Entries...)
+		crossword.SortEntries(entries)
+		g.Data = crosswordClient{Width: r.Width, Height: r.Height, Cells: r.Cells, Entries: entries,
+			AllowCheck: p.Check(), AllowReveal: p.AllowRevealLetter, ClosingText: p.ClosingText}
+		g.Scripts = []string{"js/crossword-logic.js", "js/crossword.js"}
+	case door.Wrapped != nil:
+		p := door.Wrapped
+		g.Intro = paragraphs(p.Intro)
+		st, err := p.LoadStats(env.assetsDir)
+		if err != nil {
+			g.Error, g.err = "Die Statistik wird gerade noch ausgezählt – schau später nochmal vorbei.", err
+			return g
+		}
+		// "Tage zusammen" as of the viewing day (but at least the door's date,
+		// so the dev preview before the 22nd shows the real number).
+		if since, err := waparse.ParseDate(st.Since); err == nil {
+			asOf := advent.DateOf(env.now)
+			if doorDate := (advent.Date{Year: env.year, Month: time.December, Day: door.Day}); advent.DaysBetween(asOf, doorDate) > 0 {
+				asOf = doorDate
+			}
+			on := waparse.Date{Year: asOf.Year, Month: asOf.Month, Day: asOf.Day}
+			st.AsOf = on.String()
+			st.DaysTogether = max(0, waparse.DaysBetween(since, on))
+		}
+		title := p.Title
+		if title == "" {
+			title = fmt.Sprintf("Schatzo Wrapped %d", env.year)
+		}
+		g.Data = wrappedClient{Title: title, OutroText: p.OutroText, Slides: p.SlideList(), Stats: st}
+		g.Scripts = []string{"js/wrapped-logic.js", "js/wrapped.js"}
+		g.Styles = []string{"css/wrapped.css"}
 	default:
 		return nil
 	}

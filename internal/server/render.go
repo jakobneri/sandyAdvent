@@ -175,7 +175,10 @@ func (s *Server) buildDoorView(door *doors.Door, assetBase string) doorView {
 		return assetBase + p
 	}
 	if doors.IsGame(door.Template) {
-		v.Game = buildGame(door, asset)
+		v.Game = buildGame(door, gameEnv{asset: asset, assetsDir: s.cfg.AssetsDir, now: now, year: s.cfg.Year})
+		if v.Game != nil && v.Game.err != nil {
+			s.log.Error("Türchen-Daten", "tag", door.Day, "err", v.Game.err)
+		}
 	}
 	if door.Media == nil {
 		return v

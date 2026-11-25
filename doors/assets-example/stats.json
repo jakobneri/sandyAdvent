@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-25T10:53:47+01:00",
+  "range": {
+    "from": "2026-05-01",
+    "to": "2026-10-31"
+  },
+  "since": "2024-02-14",
+  "asOf": "2026-12-22",
+  "daysTogether": 1042,
+  "totalMessages": 1252,
+  "activeDays": 178,
+  "persons": [
+    {
+      "name": "Sandy",
+      "messages": 637,
+      "words": 1501,
+      "share": 0.509,
+      "media": 26,
+      "avgResponseMinutes": 178.6,
+      "topEmoji": "❤️"
+    },
+    {
+      "name": "Jakob",
+      "messages": 615,
+      "words": 1411,
+      "share": 0.491,
+      "media": 20,
+      "avgResponseMinutes": 146.2,
+      "topEmoji": "❤️"
+    }
+  ],
+  "topEmojis": [
+    {
+      "emoji": "❤️",
+      "count": 220
+    },
+    {
+      "emoji": "😘",
+      "count": 121
+    },
+    {
+      "emoji": "🥰",
+      "count": 82
+    },
+    {
+      "emoji": "🌙",
+      "count": 67
+    },
+    {
+      "emoji": "🍕",
+      "count": 62
+    },
+    {
+      "emoji": "💤",
+      "count": 59
+    },
+    {
+      "emoji": "😂",
+      "count": 49
+    },
+    {
+      "emoji": "😍",
+      "count": 46
+    },
+    {
+      "emoji": "🌻",
+      "count": 41
+    },
+    {
+      "emoji": "🍪",
+      "count": 40
+    }
+  ],
+  "goodNightFirst": [
+    {
+      "name": "Sandy",
+      "days": 96
+    },
+    {
+      "name": "Jakob",
+      "days": 66
+    }
+  ],
+  "goodNightNights": 162,
+  "mostActiveHour": {
+    "hour": 23,
+    "count": 130,
+    "histogram": [
+      32,
+      31,
+      2,
+      0,
+      0,
+      0,
+      0,
+      94,
+      83,
+      91,
+      67,
+      68,
+      60,
+      77,
+      26,
+      38,
+      66,
+      51,
+      57,
+      47,
+      48,
+      55,
+      129,
+      130
+    ]
+  },
+  "mostActiveWeekday": {
+    "weekday": "Freitag",
+    "index": 4,
+    "count": 205,
+    "histogram": [
+      161,
+      166,
+      164,
+      177,
+      205,
+      181,
+      198
+    ]
+  },
+  "longestStreak": {
+    "days": 42,
+    "from": "2026-07-16",
+    "to": "2026-08-26"
+  },
+  "topWords": [
+    {
+      "word": "Schatzo",
+      "count": 118
+    },
+    {
+      "word": "Gute",
+      "count": 116
+    },
+    {
+      "word": "Nacht",
+      "count": 116
+    },
+    {
+      "word": "Guten",
+      "count": 73
+    },
+    {
+      "word": "Pizza",
+      "count": 71
+    },
+    {
+      "word": "Nachti",
+      "count": 67
+    },
+    {
+      "word": "Träum",
+      "count": 63
+    },
+    {
+      "word": "Süßes",
+      "count": 63
+    },
+    {
+      "word": "Schlaf",
+      "count": 60
+    },
+    {
+      "word": "geschlafen",
+      "count": 43
+    }
+  ],
+  "firstMessage": {
+    "date": "2026-05-01",
+    "time": "09:12",
+    "name": "Jakob",
+    "text": "Hallo Erika! Schön, dass wir jetzt hier schreiben 😊"
+  },
+  "busiestDay": {
+    "date": "2026-10-22",
+    "count": 12
+  }
+}

@@ -37,7 +37,7 @@ func TestExampleRegistry(t *testing.T) {
 		if d.Template == "media" && d.Media == nil {
 			t.Errorf("Tag %d: media-Params nicht geparst", day)
 		}
-		if IsGame(d.Template) && d.Quiz == nil && d.Memory == nil && d.Wordle == nil && d.Puzzle == nil {
+		if IsGame(d.Template) && d.Quiz == nil && d.Memory == nil && d.Wordle == nil && d.Puzzle == nil && d.Crossword == nil && d.Wrapped == nil {
 			t.Errorf("Tag %d: Spiel-Params nicht geparst", day)
 		}
 		if missing := d.MissingAssets("../../doors/assets-example"); len(missing) > 0 {
@@ -45,6 +45,9 @@ func TestExampleRegistry(t *testing.T) {
 		}
 	}
 	if err := reg.CheckDates(2026); err != nil {
+		t.Error(err)
+	}
+	if err := reg.CheckData("../../doors/assets-example"); err != nil {
 		t.Error(err)
 	}
 	if reg.Get(6).Memory.Pairs != 8 || reg.Get(18).Memory.Pairs != 12 || !reg.Get(18).Memory.ShowTimer {

@@ -6,11 +6,17 @@
     {{- range .Intro}}<p>{{range $i, $l := .}}{{if $i}}<br>{{end}}{{$l}}{{end}}</p>{{end}}
   </div>
   {{- end}}
+  {{- if .Error}}
+  <p class="game__error game__error--soft">{{.Error}}</p>
+  {{- else}}
   <div class="game__root" data-game-root aria-live="polite">
     <p class="game__loading">Einen Moment, das Spiel wird aufgebaut …</p>
   </div>
   <noscript><p class="game__noscript">Für dieses Spiel muss JavaScript aktiviert sein.</p></noscript>
+  {{- end}}
 </section>
+{{- if not .Error}}
 <script type="application/json" id="game-data">{{.Data}}</script>
+{{- end}}
 {{- end}}
 {{end}}

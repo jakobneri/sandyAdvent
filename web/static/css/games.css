@@ -1,4 +1,4 @@
-/* sandyAdvent – Spiele (quiz, memory, wordle, puzzle).
+/* sandyAdvent – Spiele (quiz, memory, wordle, puzzle, crossword).
    Baut auf den Tokens aus app.css auf; nur auf Spiele-Türchen geladen. */
 
 /* ---------- Rahmen ---------- */
@@ -17,6 +17,7 @@
   background: rgba(255, 250, 241, .06); color: var(--gold-200); font-weight: 700;
 }
 .game__error { color: #ffd6d6; background: rgba(161, 31, 54, .28); }
+.game__error--soft { color: var(--gold-200); background: rgba(255, 250, 241, .06); box-shadow: inset 0 0 0 1px rgba(240, 198, 110, .22); }
 .game__status { margin: 0; min-height: 0; text-align: center; font-weight: 800; color: var(--gold-200); }
 .game__status:empty { display: none; }
 .game__status.is-faded { opacity: 0; transition: opacity .4s; }
@@ -406,6 +407,109 @@
 .jpiece.is-return { transition: transform .3s var(--ease-out); }
 .jpiece.is-locked { z-index: 2; pointer-events: none; touch-action: auto; filter: none; -webkit-filter: none; }
 .jpiece.is-snap { animation: snapGlow .6s ease-out; }
+
+/* ---------- Kreuzworträtsel ---------- */
+/* Das Brett darf bis 6 px an den Rand (mehr Platz für 13 Spalten auf 360 px);
+   ist es dann noch zu breit, scrollt nur das Brett waagerecht – nie die Seite. */
+.cw-scroll {
+  position: relative; margin-left: calc(6px - var(--gutter-l)); margin-right: calc(6px - var(--gutter-r));
+  overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.cw-scroll:not(.is-scrollable) { display: flex; justify-content: center; }
+.cw-board {
+  position: relative; display: grid; width: max-content; margin: 0 auto;
+  grid-template-columns: repeat(var(--cols, 10), var(--cell, 28px)); grid-auto-rows: var(--cell, 28px); gap: var(--gap, 2px);
+  padding: 6px; border-radius: 14px;
+  background: linear-gradient(160deg, rgba(42, 101, 83, .5), rgba(11, 33, 27, .65));
+  box-shadow: inset 0 0 0 1px rgba(240, 198, 110, .28), var(--shadow-soft);
+  touch-action: manipulation; -webkit-user-select: none; user-select: none;
+}
+.cw-block { border-radius: 4px; }
+.cw-cell {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  border-radius: 5px; color: var(--ink-900); background: var(--cream-50);
+  box-shadow: inset 0 -2px 0 rgba(201, 143, 43, .25);
+  font-family: var(--font-body); font-weight: 800; font-size: calc(var(--cell, 28px) * .56); line-height: 1;
+  cursor: pointer; transition: background-color .18s, transform .12s var(--ease-out);
+}
+.cw-board.is-pre .cw-cell { opacity: 0; transform: scale(.6); }
+.cw-board.is-live .cw-cell { animation: cwIn .42s var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.cw-num {
+  position: absolute; top: 1px; left: 2px; font-size: max(8px, calc(var(--cell, 28px) * .3)); font-weight: 800;
+  line-height: 1; color: var(--cran-600); pointer-events: none;
+}
+.cw-letter { pointer-events: none; transform: translateY(1px); }
+.cw-cell.is-entry { background: var(--gold-200); }
+.cw-cell.is-cell { background: var(--gold-400); box-shadow: 0 0 0 2px var(--cran-500); z-index: 1; }
+.cw-cell.is-wrong { color: var(--cran-600); background: #ffd9d9; }
+.cw-cell.is-wrong::after {
+  content: ""; position: absolute; left: 18%; right: 18%; bottom: 14%; height: 2px; border-radius: 1px; background: var(--cran-500);
+}
+.cw-cell.is-revealed .cw-letter { color: var(--pine-500); }
+.cw-cell.is-revealed::before {
+  content: ""; position: absolute; top: 2px; right: 2px; width: 5px; height: 5px; border-radius: 50%; background: var(--pine-500);
+}
+.cw-cell.is-done { background: #e9f4ee; color: var(--pine-600); }
+.cw-cell.is-pop { animation: tilePop .14s ease-out; }
+.cw-cell.is-shake { animation: shakeX .45s cubic-bezier(.36, .07, .19, .97); }
+.cw-board.is-live .cw-cell.is-win { animation: cwWin .7s var(--ease-out) both; animation-delay: var(--d, 0ms); }
+/* echtes Eingabefeld über dem aktiven Feld: 16 px (kein iOS-Zoom), unsichtbar, Taps gehen ans Feld */
+.cw-input {
+  position: absolute; top: 0; left: 0; z-index: 3; margin: 0; padding: 0; border: 0; outline: 0;
+  font-size: 16px; line-height: 1; color: transparent; caret-color: transparent; background: transparent;
+  opacity: 0; pointer-events: none; -webkit-appearance: none; appearance: none; resize: none;
+}
+.cw-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.cw-clues { display: grid; gap: 14px; }
+.cw-sec {
+  padding: 14px 12px 10px; border-radius: var(--radius-md);
+  color: var(--ink-900); background: linear-gradient(180deg, var(--cream-50), var(--cream-100));
+  box-shadow: var(--shadow-soft);
+}
+.cw-sec__t {
+  margin: 0 6px 8px; font-family: var(--font-display); font-weight: 600; font-size: 21px; line-height: 1.2; color: var(--cran-700);
+}
+.cw-list { margin: 0; padding: 0; list-style: none; }
+.cw-clue {
+  display: flex; align-items: baseline; gap: 10px; width: 100%; min-height: 44px; padding: 9px 8px;
+  border: 0; border-radius: 10px; text-align: left; background: transparent; color: inherit;
+  font-size: 16px; line-height: 1.35; touch-action: manipulation; transition: background-color .2s;
+}
+.cw-clue__n { flex: none; min-width: 22px; font-weight: 800; color: var(--cran-600); font-variant-numeric: tabular-nums; }
+.cw-clue__t { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.cw-clue__len { flex: none; font-size: 13px; color: var(--ink-500); }
+.cw-clue.is-active { background: var(--gold-200); }
+.cw-clue.is-solved .cw-clue__t { color: var(--ink-500); text-decoration: line-through; text-decoration-color: rgba(42, 101, 83, .6); }
+.cw-clue.is-solved .cw-clue__n::after { content: " ✓"; color: var(--pine-500); }
+.cw-spacer { flex: none; }
+/* Hinweisleiste: klebt unten bzw. – per visualViewport – direkt über der Tastatur */
+.cw-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  color: var(--ink-900); background: var(--gold-200);
+  box-shadow: 0 -10px 24px -12px rgba(0, 0, 0, .7), inset 0 2px 0 var(--gold-400);
+  will-change: transform;
+}
+.cw-bar.is-raised { padding-bottom: 6px; }
+.cw-bar__text {
+  flex: 1; min-width: 0; margin: 0; padding: 4px 2px; font-size: 16px; line-height: 1.3; text-align: center;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.cw-bar__n { color: var(--cran-700); white-space: nowrap; }
+.cw-bar__len { color: var(--ink-500); font-size: 14px; white-space: nowrap; }
+.cw-bar__nav {
+  flex: none; width: 44px; height: 44px; border: 0; border-radius: 12px; padding: 0;
+  font-size: 28px; font-weight: 800; line-height: 1; color: var(--cran-700); background: rgba(255, 250, 241, .6);
+  touch-action: manipulation;
+}
+.cw-bar__nav:active { background: var(--gold-400); }
+@keyframes cwIn { from { opacity: 0; transform: scale(.6) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes cwWin { 0% { transform: none; } 35% { transform: translateY(-6px) scale(1.08); background: var(--gold-400); } 100% { transform: none; } }
+@media (hover: hover) {
+  .cw-clue:hover { background: rgba(240, 198, 110, .25); }
+  .cw-cell:hover { filter: brightness(.97); }
+}
 
 /* ---------- gemeinsame Animationen ---------- */
 @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.07); } 100% { transform: scale(1); } }
