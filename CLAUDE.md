@@ -35,8 +35,9 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
   9119 (Hermes), 11443 (UniFi OS), 11444 (nginx unifi-proxy, Container). Geplant: 8081 sandyAdvent,
   8082 schatzogram. Wer 80/443 hält, ist noch zu klären.
 - Podman + Docker vorhanden; unsere Dienste laufen trotzdem nativ als systemd-Units.
-- DNS im LAN: **UniFi EX7** (Gateway); dort ist die Pi-Adresse fest hinterlegt. AdGuard Home auf dem Pi
-  ist nicht mehr der LAN-Resolver.
+- DNS im LAN: **UniFi EX7** (Gateway). Pi-IP per **DHCP-Reservierung** im EX7 fest. Lokaler DNS-Eintrag
+  `sg.n3ri.com → 192.168.188.22` im EX7 ist noch anzulegen (Anleitung in M4-`docs/deploy.md`), zusätzlich
+  zum Cloudflare-Eintrag. AdGuard Home auf dem Pi ist nicht mehr der LAN-Resolver.
 - `n3ri.com` liegt im selben Cloudflare-Account wie `nerifeige.com` (Jakob hat Kontrolle) → API-Token
   für DNS-01 nur mit „Zone → DNS → Edit“ auf `n3ri.com`.
 - QR-Codes/Tokens werden später erzeugt (Entscheidung 25.11.).
