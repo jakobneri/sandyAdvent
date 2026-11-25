@@ -37,6 +37,9 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 - Podman + Docker vorhanden; unsere Dienste laufen trotzdem nativ als systemd-Units.
 - DNS im LAN: **UniFi EX7** (Gateway); dort ist die Pi-Adresse fest hinterlegt. AdGuard Home auf dem Pi
   ist nicht mehr der LAN-Resolver.
+- `n3ri.com` liegt im selben Cloudflare-Account wie `nerifeige.com` (Jakob hat Kontrolle) → API-Token
+  für DNS-01 nur mit „Zone → DNS → Edit“ auf `n3ri.com`.
+- QR-Codes/Tokens werden später erzeugt (Entscheidung 25.11.).
 - cloudflared-Tunnel existiert für andere Dienste (nerifeige.com) – sandyAdvent/schatzogram
   bekommen **keinen** Tunnel-Eintrag (nur Heim-WLAN).
 
