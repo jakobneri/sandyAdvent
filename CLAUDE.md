@@ -35,7 +35,8 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
   9119 (Hermes), 11443 (UniFi OS), 11444 (nginx unifi-proxy, Container). Geplant: 8081 sandyAdvent,
   8082 schatzogram. Wer 80/443 hält, ist noch zu klären.
 - Podman + Docker vorhanden; unsere Dienste laufen trotzdem nativ als systemd-Units.
-- DNS im LAN: **AdGuard Home** auf dem Pi (Router EX7 verteilt 192.168.188.22 als DNS).
+- DNS im LAN: **UniFi EX7** (Gateway); dort ist die Pi-Adresse fest hinterlegt. AdGuard Home auf dem Pi
+  ist nicht mehr der LAN-Resolver.
 - cloudflared-Tunnel existiert für andere Dienste (nerifeige.com) – sandyAdvent/schatzogram
   bekommen **keinen** Tunnel-Eintrag (nur Heim-WLAN).
 
