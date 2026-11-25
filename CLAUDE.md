@@ -26,6 +26,19 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
   baut direkt auf dem Pi, zusätzlich GitHub Action mit ARM64-Binary als Release-Artefakt,
   `docs/deploy.md` als Schritt-für-Schritt-Anleitung.
 
+## Pi „archimedes“ (Stand 25.11.2026, von Jakob)
+- Raspberry Pi 5, 8 GB, NVMe-SSD, Raspberry Pi OS, headless, LAN-IP **192.168.188.22**
+  (IP nur in `config.json`/Doku-Beispielen, nie im Code). SSH als `jakob`.
+- Node.js **20.x** (NodeSource) – zu alt für Angular 22 (braucht ≥ 22.22 bzw. ≥ 24.15).
+- Belegte Ports (vor jedem neuen Dienst `ss -tlnp` prüfen): 53 (AdGuard DNS), 3000 (Cockpit),
+  3002 (Homepage), 5678 (n8n), 8080 (Traefik aus n8n-Compose), 8181 (Kiwix), 8888 (AdGuard UI),
+  9119 (Hermes), 11443 (UniFi OS), 11444 (nginx unifi-proxy, Container). Geplant: 8081 sandyAdvent,
+  8082 schatzogram. Wer 80/443 hält, ist noch zu klären.
+- Podman + Docker vorhanden; unsere Dienste laufen trotzdem nativ als systemd-Units.
+- DNS im LAN: **AdGuard Home** auf dem Pi (Router EX7 verteilt 192.168.188.22 als DNS).
+- cloudflared-Tunnel existiert für andere Dienste (nerifeige.com) – sandyAdvent/schatzogram
+  bekommen **keinen** Tunnel-Eintrag (nur Heim-WLAN).
+
 ## Konfiguration
 - `config.json` (gitignored; Vorlage `config.example.json`): `listen`, `base_url`, `year`,
   `doors_config`, `assets_dir`, `tokens` (Token → Tag), `schatzogram.welcome_url`,
