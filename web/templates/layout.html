@@ -1,0 +1,22 @@
+{{define "page"}}<!doctype html>
+<html lang="de" class="no-js"{{if .Day}} data-day="{{.Day}}"{{end}}{{if .Intro}} data-intro="1"{{end}}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b211b">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="format-detection" content="telephone=no">
+<title>{{.Title}}</title>
+<link rel="icon" href="{{static "img/favicon.svg"}}" type="image/svg+xml">
+<link rel="stylesheet" href="{{static "css/app.css"}}">
+{{- block "head" .}}{{end}}
+<script src="{{static "js/boot.js"}}"></script>
+</head>
+<body class="{{.BodyClass}}">
+<div class="sky" aria-hidden="true"></div>
+{{block "content" .}}{{end}}
+{{- block "scripts" .}}{{end}}
+</body>
+</html>
+{{end}}
