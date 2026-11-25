@@ -79,7 +79,8 @@ Deadline: Code **und** alle Inhalte bis **30.11.2026** fertig. Meilensteine: `do
 - **media**: Audio, Video, Slideshow, Text, Link – frei kombinierbar (Liste von Blöcken).
 - **quiz**: Multiple Choice, Score, Abschlusstext.
 - **memory**: Paaranzahl konfigurierbar.
-- **wordle**: eigene Wörter, variable Länge, Umlaute.
+- **wordle**: eigene Wörter, variable Länge, Umlaute. Verlorene Runde: Wort wird aufgedeckt, weiter zur
+  nächsten Runde (kein zweiter Versuch); Tipp nur per „Tipp anzeigen“ (bestätigt 25.11.).
 - **puzzle**: Schiebe- oder Jigsaw-Puzzle aus einem Foto.
 - **crossword**: rendert Raster-JSON, Eingabe per Handy-Tastatur.
 - **wrapped**: animierte Slides aus `stats.json`.
