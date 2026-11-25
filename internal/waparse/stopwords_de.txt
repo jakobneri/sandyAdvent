@@ -1,0 +1,28 @@
+# Deutsche Stoppwörter für die Top-Wörter (eins pro Zeile, klein, '#' = Kommentar).
+# Wörter unter 3 Buchstaben fallen ohnehin raus. Ergänzen erlaubt.
+aber alle allem allen aller alles also ach ähm alter
+als am an ander andere anderen anders auch auf aus bei beim bin bis bist
+bitte bissl bisschen da dabei dadurch dafür dagegen daher dahin damals damit dann
+daran darauf daraus darf darfst darin darum das dass daß davon davor dazu dein deine
+deinem deinen deiner deines dem den denen denn dennoch der deren des deshalb dessen
+dich die dies diese diesem diesen dieser dieses dir doch dort drauf drin du durch
+eben echt eh eher eigentlich ein eine einem einen einer eines einfach einmal einige
+er erst es etwa etwas euch euer eure eurem euren eurer fast für gab gar
+gegen gehabt geht gehen gerade grad gibt gib gleich ganz ganze ganzen habe haben
+habt hab hast hat hatte hatten hätte hätten halt her heraus herein hier hin hinter
+hm hmm hmmm ich ihm ihn ihnen ihr ihre ihrem ihren ihrer ihres im immer in ins
+irgendwie irgendwas ist ja jaa jaaa jap jede jedem jeden jeder jedes jemand jetzt
+jo joa jup kann kannst kein keine keinem keinen keiner kommt komm komme kommen
+könnte könnten können konnte machen mach macht mache gemacht mal man manche mehr
+mein meine meinem meinen meiner meines mich mir mit möchte muss musst müssen
+nach naja na nee nein nen nem ner nicht nichts nix noch nun nur ob oder ohne
+okay oki okey ok oke ohh ooh oh sag sagen sagt sagte schon sehr sein seine seinem
+seinen seiner seit selbst sich sie sind so sogar soll sollen sollte sollten sonst
+sowas später tun tut über um und uns unser unsere unserem unseren unter viel viele
+vielleicht vom von vor wann war waren warst warum was weil weiter weiß weißt welche
+welchem welchen welcher welches wem wen wenn wer werde werden werdet wie wieder
+wieso will willst wir wird wirklich wirst wo wohl wollen wollte würde würden zu
+zum zur zwar zwischen dir's gibt's geht's hab's wie's isses gehts gibts
+dass weißte haste biste kannste willste glaub glaube denke finde find denk
+schon mal gerne gern los weg rum raus rein drauf drüber dran
+heute morgen abend gestern gut

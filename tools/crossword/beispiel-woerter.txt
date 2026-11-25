@@ -1,0 +1,17 @@
+# Beispiel-Wortliste für das Kreuzworträtsel (Türchen 16) – nur Platzhalter!
+# Format: WORT;Hinweis   (eine Zeile pro Wort, '#' = Kommentar, leere Zeilen ok)
+# Umlaute und ß gehen direkt (jeweils ein Kästchen). Keine Leerzeichen, Ziffern, Bindestriche.
+# Erzeugen: make crossword IN=tools/crossword/beispiel-woerter.txt OUT=doors/assets-example/kreuzwort.json SEED=2026
+
+MISTELZWEIG;Darunter wird an Weihnachten geküsst
+SCHATZO;So nenne ich dich am liebsten
+GLÜHWEIN;Heißgetränk vom Weihnachtsmarkt
+PLÄTZCHEN;Wird im Advent gebacken (und sofort genascht)
+KAKAO;Heiß, mit Sahne und Marshmallows
+SCHNEE;Fällt hoffentlich an Heiligabend
+LEBKUCHEN;Herz, das man essen kann
+GRÜẞE;Schicke ich dir jeden Morgen (Beispiel)
+RENTIER;Zieht den Schlitten
+ZIMTSTERN;Weihnachtsgebäck mit Zuckerguss
+SOCKEN;Klassisches Geschenk, aber warm
+KERZE;Brennt am Adventskranz

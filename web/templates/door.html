@@ -1,4 +1,9 @@
-{{define "head"}}<link rel="stylesheet" href="{{static "brand/tokens.css"}}">{{end}}
+{{define "head"}}<link rel="stylesheet" href="{{static "brand/tokens.css"}}">
+{{- with .Game}}
+<link rel="stylesheet" href="{{static "css/games.css"}}">
+{{- range .Styles}}
+<link rel="stylesheet" href="{{static .}}">
+{{- end}}{{end}}{{end}}
 
 {{define "content"}}
 <div class="door-intro" aria-hidden="true" data-intro>
@@ -18,12 +23,19 @@
     </div>
     <h1 class="door-title">{{.Door.Title}}</h1>
   </header>
-  {{if and .Implemented (eq .Template "media")}}{{template "tpl-media" .}}{{else}}{{template "tpl-placeholder" .}}{{end}}
+  {{if and .Implemented (eq .Template "media")}}{{template "tpl-media" .}}{{else if .Game}}{{template "tpl-game" .}}{{else}}{{template "tpl-placeholder" .}}{{end}}
   <footer class="foot" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span></footer>
 </main>
 {{end}}
 
-{{define "scripts"}}<script src="{{static "js/door.js"}}" defer></script>{{end}}
+{{define "scripts"}}<script src="{{static "js/door.js"}}" defer></script>
+{{- with .Game}}{{if not .Error}}
+<script src="{{static "js/game.js"}}" defer></script>{{end}}
+{{- range .Scripts}}
+<script src="{{static .}}" defer></script>
+{{- end}}
+{{- end}}
+{{end}}
 
 {{define "tpl-placeholder"}}
 <section class="card card--placeholder">

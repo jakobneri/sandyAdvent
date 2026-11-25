@@ -82,6 +82,9 @@ func loadAll(path string, log *slog.Logger) (*config.Config, *doors.Registry, er
 	if err := reg.CheckDates(cfg.Year); err != nil {
 		return nil, nil, fmt.Errorf("%s: %w", cfg.DoorsConfig, err)
 	}
+	if err := reg.CheckData(cfg.AssetsDir); err != nil {
+		return nil, nil, fmt.Errorf("%s: %w", cfg.AssetsDir, err)
+	}
 	cfg.LogWarnings(log)
 	for _, day := range advent.QRDays {
 		d := reg.Get(day)

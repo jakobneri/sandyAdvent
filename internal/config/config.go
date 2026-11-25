@@ -226,7 +226,23 @@ func (c *Config) Validate() error {
 		errs = append(errs, fmt.Errorf("schatzogram.welcome_url %q muss mit http:// oder https:// beginnen", c.Schatzogram.WelcomeURL))
 	}
 	errs = append(errs, ValidateTokens(c.Tokens)...)
+	if ex := c.ExampleTokens(); len(ex) > 0 && !c.Dev {
+		errs = append(errs, fmt.Errorf("%s (EXAMPLE-…) aus config.example.json nur im Dev-Modus erlaubt – "+
+			"echte Tokens mit 'make tokens' bzw. 'sandyadvent gen-tokens -write' erzeugen (zum Testen: ADVENT_DEV=1)",
+			advent.Count(len(ex), "Beispiel-Token", "Beispiel-Tokens")))
+	}
 	return errors.Join(errs...)
+}
+
+// ExampleTokens returns the placeholder tokens (EXAMPLE-…) in the config, sorted.
+func (c *Config) ExampleTokens() []string {
+	var ex []string
+	for _, tok := range sortedKeys(c.Tokens) {
+		if strings.HasPrefix(tok, ExampleTokenPrefix) {
+			ex = append(ex, tok)
+		}
+	}
+	return ex
 }
 
 // ValidateTokens checks the token map: format, only QR days, one token per day.
@@ -290,14 +306,6 @@ func (c *Config) LogWarnings(log *slog.Logger) {
 	}
 	if missing := c.MissingTokenDays(); len(missing) > 0 {
 		log.Warn("QR-Tage ohne Token", "tage", missing)
-	}
-	if !c.Dev {
-		for tok := range c.Tokens {
-			if strings.HasPrefix(tok, ExampleTokenPrefix) {
-				log.Warn("Beispiel-Tokens aus config.example.json im Produktivbetrieb – 'sandyadvent gen-tokens -write' ausführen")
-				break
-			}
-		}
 	}
 }
 

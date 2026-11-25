@@ -18,15 +18,31 @@ import (
 	"github.com/jakobneri/sandyadvent/internal/advent"
 )
 
-// Templates known to the calendar. Only "media" is implemented in M1; the
-// others render a placeholder until their milestone lands.
+// Templates known to the calendar. Templates that are not implemented yet
+// render a placeholder until their milestone lands.
 var Templates = map[string]bool{
 	"media": true, "quiz": true, "memory": true, "wordle": true, "puzzle": true,
 	"crossword": true, "wrapped": true, "reveal": true,
 }
 
 // Implemented reports whether a template has a real implementation yet.
-func Implemented(template string) bool { return template == "media" }
+func Implemented(template string) bool {
+	switch template {
+	case "media", "quiz", "memory", "wordle", "puzzle", "crossword", "wrapped":
+		return true
+	}
+	return false
+}
+
+// IsGame reports whether a template is rendered by the game shell: the
+// interactive games (M2), the crossword and the wrapped story (M3).
+func IsGame(template string) bool {
+	switch template {
+	case "quiz", "memory", "wordle", "puzzle", "crossword", "wrapped":
+		return true
+	}
+	return false
+}
 
 // Door is one entry of doors/config.json.
 type Door struct {
@@ -37,7 +53,15 @@ type Door struct {
 	Params   json.RawMessage `json:"params,omitempty"`
 	Assets   []string        `json:"assets,omitempty"`
 
-	Media *MediaParams `json:"-"` // parsed params for template "media"
+	// Parsed params; exactly one is set for implemented templates.
+	Media  *MediaParams  `json:"-"`
+	Quiz   *QuizParams   `json:"-"`
+	Memory *MemoryParams `json:"-"`
+	Wordle *WordleParams `json:"-"`
+	Puzzle *PuzzleParams `json:"-"`
+
+	Crossword *CrosswordParams `json:"-"`
+	Wrapped   *WrappedParams   `json:"-"`
 }
 
 // File is the on-disk structure.
@@ -164,20 +188,59 @@ func (d *Door) validate() error {
 			errs = append(errs, fmt.Errorf("params muss ein Objekt sein: %w", err))
 		}
 	}
-	if d.Template == "media" && len(errs) == 0 {
-		m, err := ParseMedia(d.Params)
-		if err != nil {
+	if len(errs) == 0 && Implemented(d.Template) {
+		if err := d.parseParams(); err != nil {
 			errs = append(errs, err)
 		} else {
-			for _, src := range m.AssetRefs() {
+			for _, src := range d.AssetRefs() {
 				if !d.AllowsAsset(src) {
 					errs = append(errs, fmt.Errorf("Datei %q wird benutzt, steht aber nicht in assets", src))
 				}
 			}
-			d.Media = m
 		}
 	}
 	return errors.Join(errs...)
+}
+
+// parseParams parses the params of an implemented template.
+func (d *Door) parseParams() error {
+	var err error
+	switch d.Template {
+	case "media":
+		d.Media, err = ParseMedia(d.Params)
+	case "quiz":
+		d.Quiz, err = ParseQuiz(d.Params)
+	case "memory":
+		d.Memory, err = ParseMemory(d.Params)
+	case "wordle":
+		d.Wordle, err = ParseWordle(d.Params)
+	case "puzzle":
+		d.Puzzle, err = ParsePuzzle(d.Params)
+	case "crossword":
+		d.Crossword, err = ParseCrossword(d.Params)
+	case "wrapped":
+		d.Wrapped, err = ParseWrapped(d.Params)
+	}
+	return err
+}
+
+// AssetRefs returns all asset paths referenced by the parsed params.
+func (d *Door) AssetRefs() []string {
+	switch {
+	case d.Media != nil:
+		return d.Media.AssetRefs()
+	case d.Quiz != nil:
+		return d.Quiz.AssetRefs()
+	case d.Memory != nil:
+		return d.Memory.AssetRefs()
+	case d.Puzzle != nil:
+		return d.Puzzle.AssetRefs()
+	case d.Crossword != nil:
+		return d.Crossword.AssetRefs()
+	case d.Wrapped != nil:
+		return d.Wrapped.AssetRefs()
+	}
+	return nil
 }
 
 // CleanAssetPath validates a relative asset path (slash separated) and returns
@@ -223,10 +286,8 @@ func (d *Door) MissingAssets(dir string) []string {
 	for _, a := range d.Assets {
 		check[a] = true
 	}
-	if d.Media != nil {
-		for _, a := range d.Media.AssetRefs() {
-			check[a] = true
-		}
+	for _, a := range d.AssetRefs() {
+		check[a] = true
 	}
 	keys := make([]string, 0, len(check))
 	for k := range check {

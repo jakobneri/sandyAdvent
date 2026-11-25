@@ -24,7 +24,8 @@ const doorsJSON = `{"doors":{
       "params":{"blocks":[{"type":"text","heading":"Hallo","text":"<b>fett</b>\nZeile 2"},{"type":"audio","src":"ton.m4a"},
       {"type":"slideshow","images":[{"src":"fotos/a.jpg","caption":"A"},{"src":"fotos/b.jpg"}]},
       {"type":"link","url":"https://example.org/x","label":"Link"},{"type":"yearsago","date":"2023-12-01"}]}},
- "3":{"template":"quiz","title":"Quiz"},
+ "3":{"template":"quiz","title":"Quiz","params":{"questions":[{"question":"<i>Wer?</i>","options":["Du","Ich"],"answer":0}]}},
+ "16":{"template":"crossword","title":"Rätsel","assets":["kw.json"],"params":{"grid":"kw.json"}},
  "9":{"template":"media","title":"Später","assets":["ton.m4a"],"params":{"blocks":[{"type":"audio","src":"ton.m4a"}]}},
  "23":{"template":"media","title":"Teaser","params":{"blocks":[{"type":"teaser"}]}},
  "24":{"template":"reveal","title":"Reveal"}
@@ -49,7 +50,7 @@ func newFixture(t *testing.T, dev bool, now time.Time) *fixture {
 	// symlink escaping the assets dir, listed as allowed asset
 	_ = os.Symlink(filepath.Join(dir, "outside.m4a"), filepath.Join(assets, "fotos", "link.jpg"))
 
-	cfg, err := config.Parse([]byte(`{"tokens":{"tokenDay01":1,"tokenDay03":3,"tokenDay04":4,"tokenDay09":9,"tokenDay23":23,"tokenDay24":24}}`))
+	cfg, err := config.Parse([]byte(`{"tokens":{"tokenDay01":1,"tokenDay03":3,"tokenDay04":4,"tokenDay09":9,"tokenDay16":16,"tokenDay23":23,"tokenDay24":24}}`))
 	must(t, err)
 	cfg.Dev = dev
 	cfg.AssetsDir = assets
@@ -181,9 +182,19 @@ func TestDoorRendering(t *testing.T) {
 		!strings.Contains(h.Get("Content-Security-Policy"), "default-src 'self'") {
 		t.Errorf("Header: %v", h)
 	}
-	// placeholder template
-	if b := f.get(t, "/d/tokenDay03").Body.String(); !strings.Contains(b, "Dieses Türchen wird noch gebastelt") {
-		t.Error("Platzhalter fehlt")
+	// crossword with its grid file still missing: friendly message, no game data
+	if b := f.get(t, "/d/tokenDay16").Body.String(); !strings.Contains(b, "noch nicht fertig gedruckt") || strings.Contains(b, `id="game-data"`) || strings.Contains(b, "crossword.js") {
+		t.Error("fehlendes Raster: Hinweis fehlt")
+	}
+	// game template: shell + JSON data (escaped) + scripts
+	b3 := f.get(t, "/d/tokenDay03").Body.String()
+	for _, want := range []string{`data-game="quiz"`, `id="game-data"`, "js/game.js", "js/quiz.js", "css/games.css", `\u003ci\u003eWer?`} {
+		if !strings.Contains(b3, want) {
+			t.Errorf("Quiz-Tür: %q fehlt", want)
+		}
+	}
+	if strings.Contains(b3, "<i>Wer?") || strings.Contains(b3, "gebastelt") {
+		t.Error("Quiz-Tür: unescaped oder Platzhalter")
 	}
 	// teaser: blurred logo inline + "Morgen."
 	f.clock.T = berlin(2026, 12, 23, 0, 0, 0)
@@ -191,16 +202,22 @@ func TestDoorRendering(t *testing.T) {
 	if !strings.Contains(b, "sg-teaser__logo") || !strings.Contains(b, "<svg") || !strings.Contains(b, "Morgen.") {
 		t.Error("Teaser unvollständig")
 	}
-	// day 24 (reveal) has no banner, others say "heute" on/after the reveal date
-	f.clock.T = berlin(2026, 12, 24, 0, 0, 1)
-	if b := f.get(t, "/d/tokenDay24").Body.String(); strings.Contains(b, "sg-banner\"") {
-		t.Error("Tag 24 darf keinen Banner zeigen")
+	// no banner on 23 (teaser) and 24 (reveal)
+	if strings.Contains(b, `class="sg-banner"`) || strings.Contains(b, "Schatzogram – noch") {
+		t.Error("Tag 23 darf keinen Banner zeigen")
 	}
-	if !strings.Contains(b, "Schatzogram – noch 1 Tag") {
+	if b := f.get(t, "/d/tokenDay01").Body.String(); !strings.Contains(b, "Schatzogram – noch 1 Tag<") {
 		t.Error("Banner am 23.12. muss 'noch 1 Tag' sagen")
 	}
 	f.clock.T = berlin(2026, 12, 24, 0, 0, 1)
-	if b := f.get(t, "/d/tokenDay23").Body.String(); !strings.Contains(b, "Schatzogram – heute") {
+	if b := f.get(t, "/d/tokenDay24").Body.String(); strings.Contains(b, `class="sg-banner"`) {
+		t.Error("Tag 24 darf keinen Banner zeigen")
+	}
+	// placeholder template (reveal: M4)
+	if b := f.get(t, "/d/tokenDay24").Body.String(); !strings.Contains(b, "Dieses Türchen wird noch gebastelt") {
+		t.Error("Platzhalter fehlt")
+	}
+	if b := f.get(t, "/d/tokenDay01").Body.String(); !strings.Contains(b, "Schatzogram – heute") {
 		t.Error("Banner 'heute' fehlt")
 	}
 }

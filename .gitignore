@@ -5,6 +5,30 @@
 /data/
 *.jsonl
 
+# Rohdaten für die M3-Tools: WhatsApp-Export (Tür 22) und Wortliste mit Lösungen
+# (Tür 16). Empfohlene Ablage: private/ (siehe README). Nur die erzeugten Dateien
+# wandern nach doors/assets/ (ebenfalls ignoriert).
+# Erlaubt sind nur die synthetischen Beispiele in tools/waparse/testdata/ und
+# tools/crossword/beispiel-woerter.txt.
+/private/
+/*.txt
+/*.zip
+/*.csv
+/stats.json
+/kreuzwort.json
+WhatsApp*.txt
+WhatsApp*.zip
+*.whatsapp.txt
+*.chat.txt
+*.woerter.txt
+_chat.txt
+/chat/
+/chats/
+/exports/
+/export/
+!/tools/waparse/testdata/
+!/tools/waparse/testdata/*.txt
+
 # Build-Ausgaben
 /bin/
 /out/

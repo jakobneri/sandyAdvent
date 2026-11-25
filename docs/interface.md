@@ -19,8 +19,9 @@ Der Wechsel http → https ist ein normaler Link (neuer Tab nicht nötig).
 ## 2. Countdown „Schatzogram – noch X Tage“
 - Zieldatum: `schatzogram.reveal_date` = `2026-12-24` (00:00 Europe/Berlin).
 - X = Anzahl Kalendertage bis zum Zieldatum (Berlin). Texte:
-  X ≥ 2 → „Schatzogram – noch X Tage“, X = 1 → „Schatzogram – noch 1 Tag“, X ≤ 0 → Banner wird
-  auf Tag 24 durch die Reveal-Seite ersetzt (auf anderen Türchen: „Schatzogram – heute“).
+  X ≥ 2 → „Schatzogram – noch X Tage“, X = 1 → „Schatzogram – noch 1 Tag“ (korrekt pluralisiert).
+- Auf Türchen **23 und 24 kein Banner** (Teaser bzw. Reveal übernehmen). Wird ein früheres Türchen
+  am 24. oder später geöffnet: „Schatzogram – heute“.
 - Dezent, ohne Erklärung, kein Link.
 
 ## 3. Teaser (Türchen 23)
