@@ -14,7 +14,7 @@ import (
 
 // pageFiles lists, per page, the template files parsed on top of the layout.
 var pageFiles = map[string][]string{
-	"door":      {"templates/layout.html", "templates/media.html", "templates/door.html"},
+	"door":      {"templates/layout.html", "templates/media.html", "templates/games.html", "templates/door.html"},
 	"countdown": {"templates/layout.html", "templates/countdown.html"},
 	"preview":   {"templates/layout.html", "templates/preview.html"},
 	"neutral":   {"templates/neutral.html"},
@@ -24,6 +24,7 @@ func (s *Server) parseTemplates() error {
 	funcs := template.FuncMap{
 		"static": s.static.URL,
 		"logo":   func() template.HTML { return s.logo },
+		"plural": advent.Plural,
 	}
 	s.pages = map[string]*template.Template{}
 	for name, files := range pageFiles {
@@ -59,6 +60,7 @@ type doorView struct {
 	Implemented bool
 	Banner      string
 	Blocks      []blockView
+	Game        *gameView
 }
 
 type blockView struct {
@@ -162,18 +164,21 @@ func (s *Server) buildDoorView(door *doors.Door, assetBase string) doorView {
 		Template:    door.Template,
 		Implemented: doors.Implemented(door.Template),
 	}
-	// On day 24 the reveal page replaces the banner (docs/interface.md §2).
-	if door.Template != "reveal" {
+	// Not on 23 (teaser) and 24 (reveal), see CLAUDE.md.
+	if advent.ShowsBanner(door.Day) {
 		v.Banner = advent.BannerText(now, s.cfg.Reveal)
-	}
-	if door.Media == nil {
-		return v
 	}
 	asset := func(p string) string {
 		if p == "" {
 			return ""
 		}
 		return assetBase + p
+	}
+	if doors.IsGame(door.Template) {
+		v.Game = buildGame(door, asset)
+	}
+	if door.Media == nil {
+		return v
 	}
 	doorDate := advent.Date{Year: s.cfg.Year, Month: time.December, Day: door.Day}
 	for i, b := range door.Media.Blocks {

@@ -106,3 +106,33 @@ func TestYearsAgoAndFormat(t *testing.T) {
 		t.Error("ungültiges Datum akzeptiert")
 	}
 }
+
+func TestPlural(t *testing.T) {
+	units := [][2]string{{"Tag", "Tage"}, {"Stunde", "Stunden"}, {"Minute", "Minuten"}, {"Sekunde", "Sekunden"}, {"Jahr", "Jahre"}}
+	for _, u := range units {
+		for n, want := range map[int]string{0: u[1], 1: u[0], 2: u[1], 11: u[1], 21: u[1], -1: u[0]} {
+			if got := Plural(n, u[0], u[1]); got != want {
+				t.Errorf("Plural(%d, %s) = %q, want %q", n, u[0], got, want)
+			}
+		}
+	}
+	for want, got := range map[string]string{
+		"1 Tag": Count(1, "Tag", "Tage"), "2 Tage": Count(2, "Tag", "Tage"), "0 Tage": Count(0, "Tag", "Tage"),
+		"1 Stunde": Count(1, "Stunde", "Stunden"), "2 Stunden": Count(2, "Stunde", "Stunden"),
+		"1 Minute": Count(1, "Minute", "Minuten"), "59 Minuten": Count(59, "Minute", "Minuten"),
+		"1 Sekunde": Count(1, "Sekunde", "Sekunden"), "2 Sekunden": Count(2, "Sekunde", "Sekunden"),
+	} {
+		if got != want {
+			t.Errorf("Count = %q, want %q", got, want)
+		}
+	}
+}
+
+func TestShowsBanner(t *testing.T) {
+	for _, day := range QRDays {
+		want := day != 23 && day != 24
+		if got := ShowsBanner(day); got != want {
+			t.Errorf("ShowsBanner(%d) = %v", day, got)
+		}
+	}
+}
