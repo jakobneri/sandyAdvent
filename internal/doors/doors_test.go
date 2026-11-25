@@ -37,12 +37,21 @@ func TestExampleRegistry(t *testing.T) {
 		if d.Template == "media" && d.Media == nil {
 			t.Errorf("Tag %d: media-Params nicht geparst", day)
 		}
+		if IsGame(d.Template) && d.Quiz == nil && d.Memory == nil && d.Wordle == nil && d.Puzzle == nil {
+			t.Errorf("Tag %d: Spiel-Params nicht geparst", day)
+		}
 		if missing := d.MissingAssets("../../doors/assets-example"); len(missing) > 0 {
 			t.Errorf("Tag %d: Dummy-Assets fehlen: %v", day, missing)
 		}
 	}
 	if err := reg.CheckDates(2026); err != nil {
 		t.Error(err)
+	}
+	if reg.Get(6).Memory.Pairs != 8 || reg.Get(18).Memory.Pairs != 12 || !reg.Get(18).Memory.ShowTimer {
+		t.Error("Memory 6/18: Paare/Timer")
+	}
+	if reg.Get(12).Puzzle.Mode != PuzzleJigsaw || reg.Get(12).Puzzle.Grid != 4 {
+		t.Error("Tag 12 muss jigsaw 4×4 sein")
 	}
 	// Door 23 is the teaser.
 	if b := reg.Get(23).Media.Blocks; len(b) == 0 || b[0].Type != BlockTeaser {
@@ -51,7 +60,7 @@ func TestExampleRegistry(t *testing.T) {
 }
 
 func TestVoucherDayRefused(t *testing.T) {
-	_, err := Parse([]byte(`{"doors":{"5":{"template":"quiz","title":"x"}}}`))
+	_, err := Parse([]byte(`{"doors":{"5":{"template":"crossword","title":"x"}}}`))
 	if err == nil || !strings.Contains(err.Error(), "Gutschein-Tag") {
 		t.Fatalf("err = %v", err)
 	}
@@ -59,10 +68,10 @@ func TestVoucherDayRefused(t *testing.T) {
 
 func TestDoorValidation(t *testing.T) {
 	cases := map[string]string{
-		`{"doors":{"0":{"template":"quiz","title":"x"}}}`:                                                                                "1–24",
+		`{"doors":{"0":{"template":"crossword","title":"x"}}}`:                                                                           "1–24",
 		`{"doors":{"1":{"template":"disco","title":"x"}}}`:                                                                               "unbekanntes Template",
-		`{"doors":{"1":{"template":"quiz","title":" "}}}`:                                                                                "title fehlt",
-		`{"doors":{"1":{"template":"quiz","title":"x","params":[1]}}}`:                                                                   "params muss ein Objekt",
+		`{"doors":{"1":{"template":"crossword","title":" "}}}`:                                                                           "title fehlt",
+		`{"doors":{"1":{"template":"crossword","title":"x","params":[1]}}}`:                                                              "params muss ein Objekt",
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[]}}}}`:                                                        "leer",
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[{"type":"gif"}]}}}}`:                                          "unbekannter Block-Typ",
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[{"type":"audio","src":"a.m4a"}]}}}}`:                          "nicht in assets",
@@ -71,7 +80,7 @@ func TestDoorValidation(t *testing.T) {
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[{"type":"yearsago","date":"13.12.2023"}]}}}}`:                 "date",
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[{"type":"slideshow","images":[],"interval_ms":100}]}}}}`:      "interval_ms",
 		`{"doors":{"1":{"template":"media","title":"x","params":{"blocks":[{"type":"text","txt":"Tippfehler"}]}}}}`:                      "unknown field",
-		`{"doors":{"1":{"template":"quiz","title":"x","assets":["/etc/passwd"]}}}`:                                                       "ungültiger Pfad",
+		`{"doors":{"1":{"template":"crossword","title":"x","assets":["/etc/passwd"]}}}`:                                                  "ungültiger Pfad",
 	}
 	for in, want := range cases {
 		_, err := Parse([]byte(in))

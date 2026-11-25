@@ -77,7 +77,7 @@
       var tools = root.querySelector('.ptools');
       if (tools) tools.hidden = true;
       var panel = G.winPanel({
-        title: 'Perfekt zusammengesetzt!',
+        title: 'Puzzle gelöst!',
         stats: stats,
         text: data.win_text,
         onReplay: function () {
@@ -296,7 +296,7 @@
       var countEl = h('span', { class: 'gchip gchip--gold', 'data-placed': '' });
       bar.appendChild(h('span', { class: 'gchip', text: total + ' Teile' }));
       bar.appendChild(countEl);
-      var stage, boardEl, trayEl, full, L, els = [], drag = null, z = 10;
+      var stage, boardEl, trayEl, full, L, els = [], drag = null;
       var dpr = Math.min(w.devicePixelRatio || 1, 2);
 
       function placedCount() {
@@ -444,7 +444,6 @@
         boardWrap.appendChild(stage);
         bindPointer(stage, down, move, up);
         render();
-        if (state.done) G.addClass(boardEl, 'is-done');
       }
 
       function local(x, y) {
@@ -545,6 +544,9 @@
         store.save(state);
         render();
         G.addClass(boardEl, 'is-done');
+        // leere Ablage einklappen
+        trayEl.hidden = true;
+        stage.style.height = Math.ceil(L.bh + 10) + 'px';
         showWin([total + ' Teile', 'alle gelegt'], animate, boardEl);
       }
 

@@ -61,7 +61,7 @@
       var r = cur();
       var n = len();
       headEl = h('div', { class: 'gbar' }, [
-        h('span', { class: 'gchip', text: 'Runde ' + (state.round + 1) + ' von ' + WORDS.length }),
+        h('span', { class: 'gchip', 'data-round': '', 'aria-label': 'Runde ' + (state.round + 1) + ' von ' + WORDS.length, text: 'Runde ' + (state.round + 1) + '/' + WORDS.length }),
         h('span', { class: 'gchip gchip--gold', text: G.count(n, 'Buchstabe', 'Buchstaben') }),
         h('span', { class: 'gchip', 'data-tries': '', text: tryText() })
       ]);
@@ -102,7 +102,7 @@
 
     function tryText() {
       var left = MAX - cur().guesses.length;
-      return 'noch ' + G.count(left, 'Versuch', 'Versuche');
+      return G.count(left, 'Versuch', 'Versuche');
     }
 
     function renderHint() {
@@ -243,7 +243,7 @@
     /* ---------- Rundenende ---------- */
     function roundOver(animate) {
       var r = cur();
-      G.addClass(kbd, 'is-off');
+      kbd.hidden = true; // Tastatur weg, Platz für Rundenende/Gewinn
       var last = state.round === WORDS.length - 1;
       if (r.status === 'won') {
         G.replayClass(rowsEls[r.guesses.length - 1], 'is-win');

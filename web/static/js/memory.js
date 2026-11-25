@@ -64,7 +64,7 @@
       var n = state.deck.length;
       var W = grid.parentNode.clientWidth || 320;
       var gap = n > 16 ? 6 : 8;
-      var H = Math.max(240, (w.innerHeight || 640) - 150);
+      var H = Math.max(240, (w.innerHeight || 640) * 0.62);
       var best = null;
       for (var c = 2; c <= 6; c++) {
         var r = Math.ceil(n / c);
@@ -72,8 +72,8 @@
         var sh = (H - (r - 1) * gap) / r;
         var size = n > 24 ? sw : Math.min(sw, sh);
         if (n > 24 && c < 6) continue; // >12 Paare: so viele Spalten wie möglich, Scrollen erlaubt
-        var empty = r * c - n;
-        var rank = size - empty * 9 - (c > r + 1 ? 6 : 0);
+        // große Karten, aber volle Reihen bevorzugen (4×4 statt 3×6 mit Lücken)
+        var rank = size * n / (r * c) - (c > r + 1 ? 6 : 0);
         if (!best || rank > best.rank) best = { c: c, size: size, rank: rank };
       }
       var s = Math.floor(Math.min(best.size, 132));

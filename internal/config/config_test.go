@@ -22,7 +22,7 @@ func writeCfg(t *testing.T, body string) string {
 }
 
 func TestExampleConfigIsValid(t *testing.T) {
-	cfg, err := Load("../../config.example.json", env(nil))
+	cfg, err := Load("../../config.example.json", env(map[string]string{"ADVENT_DEV": "1"}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,5 +173,35 @@ func TestOtherValidation(t *testing.T) {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("Fehler nennt %s nicht: %v", want, err)
 		}
+	}
+}
+
+func TestExampleTokensRefusedOutsideDev(t *testing.T) {
+	// The template ships EXAMPLE- tokens: outside dev mode they are an error.
+	cfg, err := Load("../../config.example.json", env(nil))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = cfg.Validate()
+	if err == nil || !strings.Contains(err.Error(), "17 Beispiel-Tokens (EXAMPLE-…)") || !strings.Contains(err.Error(), "Dev-Modus") {
+		t.Fatalf("err = %v", err)
+	}
+	if got := cfg.ExampleTokens(); len(got) != 17 || got[0] != "EXAMPLE-01" {
+		t.Fatalf("ExampleTokens = %v", got)
+	}
+	// one leftover example token is enough to refuse
+	cfg, _ = Parse([]byte(`{"tokens":{"abcdefghij":1,"EXAMPLE-03":3}}`))
+	if err := cfg.Validate(); err == nil || !strings.Contains(err.Error(), "1 Beispiel-Token (EXAMPLE-…)") {
+		t.Fatalf("err = %v", err)
+	}
+	// dev mode (file or env) allows them
+	cfg, _ = Parse([]byte(`{"dev":true,"tokens":{"EXAMPLE-03":3}}`))
+	if err := cfg.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	// real tokens are fine without dev
+	cfg, _ = Parse([]byte(`{"tokens":{"abcdefghij":1}}`))
+	if err := cfg.Validate(); err != nil {
+		t.Fatal(err)
 	}
 }

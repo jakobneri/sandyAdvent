@@ -95,7 +95,7 @@
       card.appendChild(header());
       if (q.quote) {
         card.appendChild(h('figure', { class: 'quote' }, [
-          h('span', { class: 'quote__mark', 'aria-hidden': 'true', text: '„' }),
+          h('span', { class: 'quote__mark', 'aria-hidden': 'true', text: '“' }),
           h('blockquote', { class: 'quote__text', text: q.quote })
         ]));
       }

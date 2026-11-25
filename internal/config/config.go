@@ -227,8 +227,9 @@ func (c *Config) Validate() error {
 	}
 	errs = append(errs, ValidateTokens(c.Tokens)...)
 	if ex := c.ExampleTokens(); len(ex) > 0 && !c.Dev {
-		errs = append(errs, fmt.Errorf("%d Beispiel-Tokens (EXAMPLE-…) aus config.example.json sind nur im Dev-Modus erlaubt – "+
-			"echte Tokens mit 'make tokens' bzw. 'sandyadvent gen-tokens -write' erzeugen (zum Testen: ADVENT_DEV=1)", len(ex)))
+		errs = append(errs, fmt.Errorf("%s (EXAMPLE-…) aus config.example.json nur im Dev-Modus erlaubt – "+
+			"echte Tokens mit 'make tokens' bzw. 'sandyadvent gen-tokens -write' erzeugen (zum Testen: ADVENT_DEV=1)",
+			advent.Count(len(ex), "Beispiel-Token", "Beispiel-Tokens")))
 	}
 	return errors.Join(errs...)
 }

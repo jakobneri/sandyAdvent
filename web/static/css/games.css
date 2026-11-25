@@ -137,14 +137,14 @@
 .quiz__step.is-right { background: var(--pine-500); }
 .quiz__step.is-wrong { background: var(--cran-500); }
 .quote {
-  position: relative; margin: 4px 0 14px; padding: 22px 18px 18px 22px; border-radius: var(--radius-md);
+  position: relative; margin: 4px 0 14px; padding: 34px 18px 18px 22px; border-radius: var(--radius-md);
   color: var(--cream-50); background: linear-gradient(150deg, var(--pine-500), var(--night-700));
   box-shadow: inset 0 0 0 1px rgba(240, 198, 110, .35), var(--shadow-soft);
   transform: rotate(-.6deg);
 }
 .quote__mark {
-  position: absolute; top: -18px; left: 10px; font-family: var(--font-display); font-weight: 700; font-style: italic;
-  font-size: 78px; line-height: 1; color: var(--gold-400);
+  position: absolute; top: 8px; left: 16px; font-family: var(--font-display); font-weight: 700; font-style: italic;
+  font-size: 64px; line-height: .75; height: 28px; overflow: hidden; color: var(--gold-400);
 }
 .quote__text {
   margin: 0; font-family: var(--font-display); font-style: italic; font-size: 21px; line-height: 1.4;
@@ -301,7 +301,6 @@
   box-shadow: 0 -10px 24px -14px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(240, 198, 110, .2);
   transition: opacity .3s;
 }
-.wkbd.is-off { opacity: .45; pointer-events: none; }
 .wkbd__row { display: flex; justify-content: center; gap: 5px; }
 .wkey {
   flex: 1 1 0; min-width: 0; max-width: 44px; height: 48px; padding: 0; border: 0; border-radius: 9px;
