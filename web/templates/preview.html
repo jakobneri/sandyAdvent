@@ -1,16 +1,16 @@
 {{define "content"}}
 <main class="wrap wrap--wide" id="main">
   <header class="pv-head">
-    <p class="kicker">Dev-Modus</p>
-    <h1 class="door-title">Vorschau</h1>
+    <h1 class="hero__title">Vorschau</h1>
+    <p class="pv-sub">Nur im Dev-Modus sichtbar.</p>
     <dl class="pv-meta">
       <div><dt>Jetzt</dt><dd>{{.Now}}{{if .Overridden}} <span class="chip chip--gold">ADVENT_NOW</span>{{end}}</dd></div>
       <div><dt>Banner</dt><dd>{{.Banner}}</dd></div>
-      <div><dt>Config</dt><dd><code>{{.ConfigPath}}</code></dd></div>
-      <div><dt>Assets</dt><dd><code>{{.AssetsDir}}</code></dd></div>
-      {{- if .BaseURL}}<div><dt>Base-URL</dt><dd><code>{{.BaseURL}}</code></dd></div>{{end}}
+      <div><dt>Config</dt><dd><code class="pv-code">{{.ConfigPath}}</code></dd></div>
+      <div><dt>Assets</dt><dd><code class="pv-code">{{.AssetsDir}}</code></dd></div>
+      {{- if .BaseURL}}<div><dt>Base-URL</dt><dd><code class="pv-code">{{.BaseURL}}</code></dd></div>{{end}}
     </dl>
-    {{- if .MissingTok}}<p class="pv-warn">QR-Tage ohne Token: {{range $i, $d := .MissingTok}}{{if $i}}, {{end}}{{$d}}{{end}}</p>{{end}}
+    {{- if .MissingTok}}<p class="pv-warn"><span class="pv-warn__icon" aria-hidden="true">!</span>QR-Tage ohne Token: {{range $i, $d := .MissingTok}}{{if $i}}, {{end}}{{$d}}{{end}}</p>{{end}}
   </header>
   <ol class="pv-grid">
   {{- range .Days}}
@@ -22,20 +22,20 @@
         {{- else}}<span class="chip chip--locked">zu</span>{{end}}
       </div>
       {{- if .Voucher}}
-      <p class="pv-tile__title">Gedruckter Gutschein – keine Route</p>
+      <p class="pv-tile__title">Gedruckter Gutschein, ohne <span class="nowrap">QR-Code</span></p>
       {{- else}}
       {{- if .Door}}
       <p class="pv-tile__title">{{.Door.Title}}</p>
-      <p class="pv-tile__tpl">{{.Door.Template}}{{if not .Implemented}} · Platzhalter{{end}}</p>
+      <p class="pv-tile__tpl">{{.Door.Template}}{{if not .Implemented}} (Platzhalter){{end}}</p>
       {{- else}}
-      <p class="pv-warn">keine Türchen-Config</p>
+      <p class="pv-warn"><span class="pv-warn__icon" aria-hidden="true">!</span>keine Türchen-Config</p>
       {{- end}}
       {{- if not .Unlocked}}<p class="pv-tile__when">ab {{.UnlockAt}}</p>{{end}}
-      {{- if .Missing}}<p class="pv-warn">fehlt: {{range $i, $m := .Missing}}{{if $i}}, {{end}}{{$m}}{{end}}</p>{{end}}
+      {{- if .Missing}}<p class="pv-warn"><span class="pv-warn__icon" aria-hidden="true">!</span>fehlt: {{range $i, $m := .Missing}}{{if $i}}, {{end}}{{$m}}{{end}}</p>{{end}}
       <div class="pv-links">
-        {{- if .Door}}<a href="/dev/door/{{.Day}}">Tür</a>{{end}}
-        <a href="/dev/countdown/{{.Day}}">Countdown</a>
-        {{- if .Token}}<a href="/d/{{.Token}}">Echter Link</a>{{else}}<span class="pv-warn">kein Token</span>{{end}}
+        {{- if .Door}}<a class="pv-link" href="/dev/door/{{.Day}}">Tür</a>{{end}}
+        <a class="pv-link" href="/dev/countdown/{{.Day}}">Countdown</a>
+        {{- if .Token}}<a class="pv-link" href="/d/{{.Token}}">Echter Link</a>{{else}}<span class="pv-warn"><span class="pv-warn__icon" aria-hidden="true">!</span>kein Token</span>{{end}}
       </div>
       {{- end}}
     </li>

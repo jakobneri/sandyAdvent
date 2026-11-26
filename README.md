@@ -2,7 +2,7 @@
 
 Digitaler Adventskalender – ein einzelnes Go-Binary mit eingebetteten Templates, CSS, JS und Fonts.
 Kontext und verbindliche Entscheidungen: [CLAUDE.md](CLAUDE.md), Meilensteine: [docs/plan.md](docs/plan.md),
-Schnittstelle zu Schatzogram: [docs/interface.md](docs/interface.md).
+Schnittstelle zu Schatzogram: [docs/interface.md](docs/interface.md), Design-System: [docs/design.md](docs/design.md).
 
 ## Quickstart (Dev)
 
@@ -113,5 +113,6 @@ Kopien abweichen.
 
 ## Fonts
 
-Fraunces und Nunito (SIL OFL 1.1, via `npm pack @fontsource/fraunces @fontsource/nunito` v5.3.0),
-nur die Latin-Subsets als woff2 in `web/static/fonts/` inkl. Lizenzen. Keine CDN-Zugriffe.
+Young Serif 400, Nunito 400/700 und Fraunces 700 italic (nur Schatzogram-Wortmarke), alle SIL OFL 1.1,
+via `npm pack @fontsource/young-serif @fontsource/nunito @fontsource/fraunces` v5.3.0, nur die Latin-Subsets
+als woff2 in `web/static/fonts/` inkl. Lizenzen. Keine CDN-Zugriffe.

@@ -20,7 +20,8 @@
     function finish() {
       if (done) return;
       done = true;
-      root.className = root.className.replace(/\s*\bintro\b/, '');
+      // .is-opened löst den einmaligen Glanz auf der Tageszahl aus (CSS).
+      root.className = root.className.replace(/\s*\bintro\b/, '') + ' is-opened';
     }
     // CSS spielt die Animation allein ab; JS räumt nur auf und erlaubt Überspringen.
     setTimeout(finish, 2800);

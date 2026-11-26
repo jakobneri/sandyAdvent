@@ -4,29 +4,27 @@
 <div class="door-intro" aria-hidden="true" data-intro>
   <div class="door-intro__frame">
     <div class="door-intro__light"></div>
-    <div class="door-intro__door"><span class="door-intro__num">{{.Day}}</span></div>
+    <div class="door door--intro"><span class="foil foil--flat" data-num="{{.Day}}"><span class="foil__face">{{.Day}}</span></span></div>
   </div>
 </div>
 <main class="wrap" id="main">
-  <header class="door-head">
-    <div class="door-head__row">
-      <span class="seal" aria-hidden="true"><span>{{.Day}}</span></span>
-      <p class="door-head__date"><span class="sr-only">Türchen {{.Day}}, </span>{{.DateLabel}}</p>
-      {{- if .Banner}}
-      <p class="sg-banner"><span class="sg-banner__dot" aria-hidden="true"></span>{{.Banner}}</p>
-      {{- end}}
-    </div>
-    <h1 class="door-title">{{.Door.Title}}</h1>
+  <div class="topline">
+    {{- if .Banner}}
+    <p class="sg-banner"><span class="sg-banner__dot" aria-hidden="true"></span>{{.Banner}}</p>
+    {{- end}}
+  </div>
+  <header class="hero">
+    <p class="hero__date"><span class="sr-only">Türchen {{.Day}}, {{.DateLabel}}</span><span class="foil foil--hero" data-num="{{.Day}}" aria-hidden="true"><span class="foil__face">{{.Day}}</span></span><span class="hero__month" aria-hidden="true">Dezember</span></p>
+    <h1 class="hero__title">{{.Door.Title}}</h1>
   </header>
   {{if and .Implemented (eq .Template "media")}}{{template "tpl-media" .}}{{else}}{{template "tpl-placeholder" .}}{{end}}
-  <footer class="foot" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span></footer>
 </main>
 {{end}}
 
 {{define "scripts"}}<script src="{{static "js/door.js"}}" defer></script>{{end}}
 
 {{define "tpl-placeholder"}}
-<section class="card card--placeholder">
+<section class="placeholder">
   <svg class="placeholder__art" viewBox="0 0 120 96" aria-hidden="true" focusable="false">
     <rect x="18" y="38" width="84" height="50" rx="8" class="ph-box"/>
     <rect x="12" y="26" width="96" height="18" rx="6" class="ph-lid"/>
@@ -34,7 +32,7 @@
     <path d="M60 26c-6-14-26-18-26-6 0 8 14 8 26 6zm0 0c6-14 26-18 26-6 0 8-14 8-26 6z" class="ph-bow"/>
     <path d="M8 18l4 4m-4 0l4-4M104 10l3 3m-3 0l3-3M112 30l2 2m-2 0l2-2" class="ph-spark"/>
   </svg>
-  <h2 class="card__title">Dieses Türchen wird noch gebastelt</h2>
-  <p>Hier wird gerade noch geschnippelt, geklebt und verziert. Schau bald wieder vorbei!</p>
+  <h2 class="block__title">Dieses Türchen wird noch gebastelt</h2>
+  <div class="prose placeholder__text"><p>Hier wird gerade noch geschnippelt, geklebt und verziert. Schau bald wieder vorbei!</p></div>
 </section>
 {{end}}

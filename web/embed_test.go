@@ -30,8 +30,12 @@ func TestBrandCopiesInSync(t *testing.T) {
 }
 
 func TestFontsAndLicensesEmbedded(t *testing.T) {
-	for _, p := range []string{"static/fonts/LICENSE-Fraunces.txt", "static/fonts/LICENSE-Nunito.txt",
-		"static/fonts/fraunces-latin-600-normal.woff2", "static/fonts/nunito-latin-400-normal.woff2"} {
+	for _, p := range []string{
+		"static/fonts/LICENSE-YoungSerif.txt", "static/fonts/young-serif-latin-400-normal.woff2",
+		"static/fonts/LICENSE-Nunito.txt", "static/fonts/nunito-latin-400-normal.woff2",
+		"static/fonts/nunito-latin-700-normal.woff2",
+		"static/fonts/LICENSE-Fraunces.txt", "static/fonts/fraunces-latin-700-italic.woff2", // Schatzogram-Wortmarke
+	} {
 		if _, err := fs.Stat(FS, p); err != nil {
 			t.Error(err)
 		}
