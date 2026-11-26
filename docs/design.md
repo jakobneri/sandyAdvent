@@ -35,13 +35,21 @@ Abgeleitet (keine neuen Töne): `--gold-hell` (Überschriften in der Nacht), `--
 `--fotoweiss` (Polaroidrahmen), `--text-leise` (Zweittext in der Nacht).
 Spielzustände: `--ok` `#2F7A5F`, `--near` = Kerzengold, `--wrong` = Preiselbeere, `--miss` = Tannenzweig.
 
+Transparenzen laufen über Kanal-Tokens, nicht über neue Hex-/rgba-Literale (kein `color-mix()`,
+iOS 16): `rgba(var(--gold-rgb), .16)`, `rgba(var(--papier-rgb), .45)`, Schatten mit `--schatten-rgb`.
+Schatten nach Höhe: `--shadow-small` (liegt auf: Medaille, Knauf), `--shadow-object` (Foto, Papier),
+`--shadow-float` (Siegel, Pfeile, Papierbögen), `--shadow-deep` (Tür), `--drop-tag` (als `filter` für
+Formen mit `clip-path`). Geschenkband: `--ribbon-v` / `--ribbon-h` (Gold-tief → Kerzengold → Gold-tief).
+
 Kontrast (WCAG, gerechnet): Zuckerguss/Tannennacht 13,8 · text-leise/Tannennacht 7,8 ·
 Gold-hell/Tannennacht 11,5 · Preiselbeere/Zuckerguss 6,3 · Lebkuchen/Zuckerguss 13,3 ·
 Zuckerguss/`--ok` 4,7 · Lebkuchen/Kerzengold 7,8 · Gold-hell/Tannenzweig 7,6.
 **Preiselbeere als Text in der Nacht ist verboten** (2,2:1, auf Tannenzweig 1,4:1); dort Gold-hell nehmen.
 
-Licht: genau eine Lichtquelle, der warme Schein hinter der Tageszahl (`.hero::before`). Keine weiteren
-Verläufe als Deko. Die Countdown-Seite bleibt dunkel (die Tür ist noch zu).
+Licht: genau eine Lichtquelle, der warme Schein hinter der Tageszahl (`.hero::before`; ab 600px
+kleiner und leiser, damit er nicht zur Wolke wird). Keine weiteren Verläufe als Deko. Die
+Countdown-Seite bleibt dunkel (die Tür ist noch zu). Der Teaser (23) hat keinen Außenschein, der in
+die Tannennacht ausblutet: nur einen feinen Ember-Rand und einen pflaumenfarbenen Schatten.
 
 ## Schrift
 
@@ -76,10 +84,12 @@ Regeln:
 ## Layout
 
 - Eine Spalte, linksbündig (liest sich wie ein Brief), `.wrap` max. 600px (Vorschau 980px).
-  Zentriert nur die „Objekt“-Seiten: Countdown und Platzhalter.
+  Zentriert nur die „Objekt“-Seite Countdown. Alles unter dem Kalenderblatt-Kopf (auch der
+  Platzhalter) folgt der linken Kante, eine Ausrichtung pro Bildschirm.
 - Seitenrand `max(20px, safe-area)`, unter 375px 16px. Oben/unten Safe-Area + 14/48px.
-- 8er-Raster: `--space-1…8` = 4/8/12/16/24/32/40/56. Hero → erster Block 32px, Block-Abstand 40px
-  (48px ab 600px). Abstand zwischen Blöcken kommt **nur** von `.blocks { gap }`, Blöcke haben keine
+- 8er-Raster: `--space-1…8` = 4/8/12/16/24/32/40/56. Banner-Zeile → Tageszahl 24px (mind. 12px
+  bis zur Glyphe, auch bei zweistelligen Tagen). Titel → erster Block 24px (32px ab 600px), Block-Abstand
+  40px (48px ab 600px): Titel und Einleitung gehören sichtbar zusammen. Abstand zwischen Blöcken kommt **nur** von `.blocks { gap }`, Blöcke haben keine
   Außenabstände.
 - Radien folgen dem Material: Foto 3px, Papier 6px, Tür 8px, Zeile 12px, Siegel 50%, Chip 999px.
 - Kein horizontales Scrollen: `overflow-x: clip` (Fallback `hidden`) auf html und body ist nur das
@@ -93,7 +103,11 @@ Regeln:
 
 Eine Klasse pro Teil (BEM: `block__el`, `block--mod`), keine Regeln auf nackte Kindelemente
 (Ausnahme `.prose > p`). Texte und Icons auf Blockebene dürfen keinen Inhalt annehmen: der
-Audio-Block kann Sprachnachricht oder Lied sein, der Link-Block irgendein Ziel.
+Audio-Block kann Sprachnachricht oder Lied sein, der Link-Block irgendein Ziel (deshalb ein schlichter
+Chevron im Siegel, kein „externer Link“-Kasten; was passiert, sagt allein die Beschriftung).
+Fehlertexte aktiv und mit Anleitung: „Die Aufnahme lässt sich gerade nicht laden. Lade die Seite neu
+und versuch es noch einmal.“ Bei „Heute vor X Jahren“ ist das Label die `h2`, ein optionaler Titel
+steht als Text darunter (sichtbare und semantische Hierarchie gleich).
 
 | Klasse | Was | Für M2/M3 |
 |---|---|---|
@@ -127,22 +141,31 @@ Fokus: `:focus-visible { outline: 2px solid transparent; outline-offset: 2px; bo
 var(--tannennacht), 0 0 0 5px var(--kerzengold); }` (transparente Outline = sichtbar im
 Forced-Colors-Modus). Die Regel steht spät im CSS, damit sie Komponenten-Schatten überschreibt.
 Komponenten mit eigenem Goldring (Siegel, Range-Thumb) bekommen außen einen Zuckerguss-Ring. Der
-Radius folgt der Komponente. Neue Komponenten mit `box-shadow` und höherer Spezifität als (0,1,0)
+Radius folgt der Komponente. Der Slideshow-Track bekommt den Ring nach innen (sonst läuft er durch die
+Punkte), eine `.action`-Zeile einen weiter abgesetzten Ring (8–10px), damit er den Siegel-Hof nicht
+schneidet. Neue Komponenten mit `box-shadow` und höherer Spezifität als (0,1,0)
 brauchen eine eigene `:focus-visible`-Regel.
 
 ## Bewegung
 
 - **Der eine Moment:** Intro-Tür (nur erster Besuch, Tipp überspringt, ca. 2,5s): Ruck → Tür schwingt
-  auf → Licht flutet → Seite steigt 12px auf → ein Glanz über die Tageszahl.
+  auf → der leuchtende Rahmen wächst **deckend** über den ganzen Bildschirm (im Querformat weiter,
+  `introZoomWide`) → erst dann verblasst das Overlay kurz (0,4s, ease-out) → Titel und Inhalt steigen
+  12px auf, die Tageszahl bleibt stehen → ein Glanz über die Zahl. Nie einen halbtransparenten
+  Lichtkasten über Grün stehen lassen (wird oliv/grau). Das Licht ist warmes Kerzenweiß, kein Reinweiß.
 - **Antworten auf Aktionen:** Siegel `scale(.94)`, 150ms; Slideshow-Punkt wird zur Pille; Countdown:
   Tür wackelt, Anhänger schwingt, Spruch blendet über, `vibrate(40)`.
-- **Nur zur Aufmerksamkeit:** Countdown-Tür stupst alle 7s kurz an; Teaser-Logo atmet (es ist der Inhalt).
+- **Nur zur Aufmerksamkeit:** nur das Teaser-Logo atmet (es ist der Inhalt). Die Countdown-Tür bewegt
+  sich erst, wenn man sie antippt; dazu lädt der Hinweis „Rütteln hilft nicht. Probier’s trotzdem.“ ein.
 - Kein Dauerschnee, keine Einblend-Animation pro Abschnitt, keine Hover-Effekte auf allem.
   Hover nur in `@media (hover: hover)`.
 - `prefers-reduced-motion`: globaler Kill-Switch plus `animation: none` für jede benannte
-  Endlos-Animation (gleiche Selektor-Spezifität wiederholen). Kein Intro, kein Glanz, kein Stupsen.
-- WebKit: kein 3D-`transform`, `translateZ` oder `will-change` auf einem Vorfahren von `.foil--hero`;
-  der Aufstieg von `.wrap` bleibt ein 2D-`translateY`.
+  Endlos-Animation (gleiche Selektor-Spezifität wiederholen). Kein Intro, kein Glanz.
+- WebKit: **kein animiertes `transform`** (auch kein 2D), kein `translateZ` und kein `will-change` auf
+  einem Vorfahren von `.foil--hero` (Text mit `background-clip:text` kann sonst während der Animation
+  leer oder als Verlaufskasten erscheinen). Der Aufstieg läuft deshalb auf den Geschwistern
+  (`.intro .wrap > :not(.hero)`, `.intro .hero__title`), nicht auf `.wrap`. Noch auf einem echten
+  iPhone (iOS 16/17) prüfen: hier gibt es kein WebKit zum Testen.
 
 ## Technik (iOS Safari 16)
 

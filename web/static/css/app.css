@@ -30,8 +30,12 @@
   --preiselbeere-tief: #761B2D;
   --zuckerguss-tief: #EDE2CC;
   --fotoweiss: #FFFDF8;
+  /* Kanäle für Transparenzen (rgba(var(--x-rgb), a); kein color-mix() wegen iOS 16) */
+  --gold-rgb: 232, 182, 82;     /* = --kerzengold */
+  --papier-rgb: 251, 244, 230;  /* = --zuckerguss */
+  --schatten-rgb: 4, 14, 11;    /* Schatten = sehr tiefe Tannennacht */
   --text: var(--zuckerguss);
-  --text-leise: rgba(251, 244, 230, .72);
+  --text-leise: rgba(var(--papier-rgb), .72);
   /* Spielzustände (M2/M3) – immer mit Zeichen/Text, nie nur Farbe */
   --ok: #2F7A5F;
   --near: var(--kerzengold);
@@ -41,6 +45,8 @@
   --foil: linear-gradient(172deg, #FFF3CF 0%, #F0C766 22%, #C38F2E 48%, #F6DA8E 66%, #B07D24 84%, #E9BE5A 100%);
   --door-light: radial-gradient(circle at 50% 45%, #FFF6D8 0%, #F0C766 38%, #C38F2E 70%, #6E4310 100%);
   --door-paper: linear-gradient(165deg, var(--preiselbeere-hell) 0%, var(--preiselbeere) 40%, var(--preiselbeere-tief) 100%);
+  --ribbon-v: linear-gradient(90deg, var(--gold-tief), var(--kerzengold), var(--gold-tief));
+  --ribbon-h: linear-gradient(180deg, var(--gold-tief), var(--kerzengold), var(--gold-tief));
 
   /* Schrift */
   --font-display: "Young Serif", Georgia, "Times New Roman", serif;
@@ -71,8 +77,12 @@
   --radius-row: 12px;
   --radius-pill: 999px;
 
-  --shadow-object: 0 18px 30px -16px rgba(4, 14, 11, .85), 0 2px 4px rgba(4, 14, 11, .35);
-  --shadow-float: 0 10px 22px -10px rgba(4, 14, 11, .8);
+  /* Schatten nach Höhe: klein (liegt auf), Objekt, schwebt, tief (Tür) */
+  --shadow-small: 0 4px 10px -4px rgba(var(--schatten-rgb), .5);
+  --shadow-object: 0 18px 30px -16px rgba(var(--schatten-rgb), .85), 0 2px 4px rgba(var(--schatten-rgb), .35);
+  --shadow-float: 0 10px 22px -10px rgba(var(--schatten-rgb), .8);
+  --shadow-deep: 0 26px 50px -22px rgba(var(--schatten-rgb), .9);
+  --drop-tag: drop-shadow(0 14px 16px rgba(var(--schatten-rgb), .55)); /* für filter (clip-path-Formen) */
   --ring-focus: 0 0 0 3px var(--tannennacht), 0 0 0 5px var(--kerzengold);
 
   --ease-out: cubic-bezier(.2, .8, .2, 1);
@@ -162,13 +172,13 @@ h1, h2, h3 { font-weight: 400; }
 
 /* Kopf eines Türchens: Abreißkalender-Blatt */
 .topline { display: flex; justify-content: flex-end; min-height: 28px; }
-.hero { position: relative; z-index: 0; margin: var(--space-2) 0 var(--space-6); }
+.hero { position: relative; z-index: 0; margin: var(--space-5) 0 var(--space-5); }
 /* Eine Lichtquelle: das Licht aus der geöffneten Tür, hinter der Zahl */
 .hero::before {
   content: ""; position: absolute; z-index: -1; pointer-events: none;
-  top: calc(-1 * (env(safe-area-inset-top) + 70px)); height: 440px;
+  top: calc(-1 * (env(safe-area-inset-top) + 86px)); height: 440px;
   left: calc(-1 * var(--gutter-l)); right: calc(-1 * var(--gutter-r));
-  background: radial-gradient(75% 55% at 24% 38%, rgba(232, 182, 82, .2), rgba(232, 182, 82, 0) 72%);
+  background: radial-gradient(75% 55% at 24% 38%, rgba(var(--gold-rgb), .2), rgba(var(--gold-rgb), 0) 72%);
 }
 .hero__date { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-3); }
 .hero__month {
@@ -255,7 +265,7 @@ h1, h2, h3 { font-weight: 400; }
   display: inline-grid; place-items: center;
   color: var(--zuckerguss);
   background: radial-gradient(circle at 34% 28%, var(--preiselbeere-hell), var(--preiselbeere) 48%, var(--preiselbeere-tief) 100%);
-  box-shadow: 0 0 0 2px var(--kerzengold), 0 0 0 6px rgba(232, 182, 82, .16), var(--shadow-float);
+  box-shadow: 0 0 0 2px var(--kerzengold), 0 0 0 6px rgba(var(--gold-rgb), .16), var(--shadow-float);
   -webkit-appearance: none; appearance: none;
   touch-action: manipulation;
   transition: transform var(--dur-press) var(--ease-out);
@@ -344,7 +354,7 @@ h1, h2, h3 { font-weight: 400; }
   content: ""; position: absolute; z-index: -1; pointer-events: none;
   top: var(--stack-t); bottom: var(--stack-b); left: var(--stack-x); right: var(--stack-x);
   border-radius: var(--radius-photo);
-  box-shadow: 0 10px 20px -12px rgba(4, 14, 11, .8);
+  box-shadow: var(--shadow-float);
 }
 .stack::before { background: var(--zuckerguss-tief); transform: rotate(3deg); }
 .stack::after { background: var(--zuckerguss); transform: rotate(-2.2deg); }
@@ -382,8 +392,8 @@ h1, h2, h3 { font-weight: 400; }
 /* .tag – Geschenkanhänger: abgeschnittene Ecken, Öse, Schatten am Wrapper
    (clip-path schneidet box-shadow ab). Für Ergebnis-/Gewinnmeldungen (M2/M3). */
 .tag-wrap {
-  -webkit-filter: drop-shadow(0 14px 16px rgba(4, 14, 11, .55));
-  filter: drop-shadow(0 14px 16px rgba(4, 14, 11, .55));
+  -webkit-filter: var(--drop-tag);
+  filter: var(--drop-tag);
   transform: rotate(-3deg); transform-origin: 50% 20px;
 }
 .tag {
@@ -424,7 +434,7 @@ h1, h2, h3 { font-weight: 400; }
   display: inline-block; padding: 2px 8px;
   border-radius: var(--radius-pill);
   font-size: var(--fs-micro); font-weight: 700; line-height: 1.5; white-space: nowrap;
-  color: var(--gold-hell); background: rgba(232, 182, 82, .16);
+  color: var(--gold-hell); background: rgba(var(--gold-rgb), .16);
 }
 .chip--ok { color: var(--zuckerguss); background: var(--ok); }
 .chip--wrong { color: var(--zuckerguss); background: var(--wrong); }
@@ -525,7 +535,7 @@ h1, h2, h3 { font-weight: 400; }
   touch-action: manipulation;
 }
 .slides__dot::before {
-  content: ""; width: 8px; height: 8px; border-radius: 4px; background: rgba(251, 244, 230, .45);
+  content: ""; width: 8px; height: 8px; border-radius: 4px; background: rgba(var(--papier-rgb), .45);
   transition: width var(--dur-swap) var(--ease-out), background-color var(--dur-swap);
 }
 .slides__dot[aria-current="true"]::before { width: 20px; background: var(--kerzengold); }
@@ -533,7 +543,7 @@ h1, h2, h3 { font-weight: 400; }
 /* Link */
 .block--link .action { margin-top: 2px; }
 
-/* Heute vor X Jahren */
+/* Heute vor X Jahren: das Label ist die Überschrift (h2), der optionale Titel Text darunter */
 .years__label {
   margin: 0;
   font-family: var(--font-display); font-weight: 400; font-synthesis: none;
@@ -557,7 +567,7 @@ h1, h2, h3 { font-weight: 400; }
   padding: 56px 20px 48px; text-align: center;
   border-radius: var(--sg-radius, 18px);
   background: radial-gradient(80% 60% at 50% 35%, rgba(255, 90, 54, .3), rgba(27, 18, 32, 0) 70%), var(--sg-night, #1B1220);
-  box-shadow: 0 0 80px rgba(255, 90, 54, .22), inset 0 0 0 1px rgba(255, 182, 39, .18);
+  box-shadow: 0 0 0 1px rgba(255, 90, 54, .35), 0 24px 48px -20px rgba(27, 18, 32, .95), inset 0 0 0 1px rgba(255, 182, 39, .18);
 }
 .sg-teaser__logo {
   width: 168px; height: 168px; margin: 0 auto;
@@ -576,26 +586,29 @@ h1, h2, h3 { font-weight: 400; }
 
 /* ======================================================================
    Öffnungsanimation (nur beim ersten Besuch, s. boot.js)
-   0.5s Ruck · 0.75s Tür schwingt auf · 1.5s Licht flutet · 2.0s Seite erscheint
+   0.5s Ruck · 0.75s Tür schwingt auf · 1.4s Licht flutet (Rahmen wächst
+   deckend über den Bildschirm) · 2.1s Licht verblasst, Seite steigt auf ·
+   danach ein Glanz über die Zahl. Die Zahl selbst bewegt sich nicht.
    ====================================================================== */
 .door-intro { display: none; }
 .intro .door-intro {
   display: flex; align-items: center; justify-content: center;
   position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 50;
+  overflow: hidden;
   background: radial-gradient(circle at 50% 42%, var(--tannenzweig), var(--tannennacht) 72%);
-  animation: introOut .5s ease 2s forwards;
+  animation: introOut .4s var(--ease-out) 2.1s forwards;
 }
 .door-intro__frame {
   position: relative; width: 220px; height: 292px;
   border-radius: 10px; perspective: 1200px;
   background: var(--door-light);
-  box-shadow: 0 0 0 6px var(--tannennacht), 0 0 0 7.5px rgba(232, 182, 82, .45), 0 30px 60px -20px rgba(4, 14, 11, .8);
-  animation: introZoom .8s cubic-bezier(.5, 0, .2, 1) 1.5s forwards;
+  box-shadow: 0 0 0 6px var(--tannennacht), 0 0 0 7.5px rgba(var(--gold-rgb), .45), var(--shadow-deep);
+  animation: introZoom .75s cubic-bezier(.55, 0, .8, .4) 1.4s forwards;
 }
-.door-intro__light {
+.door-intro__light { /* warmes Kerzenlicht, kein kaltes Weiß */
   position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 10px;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 60%);
-  opacity: 0; animation: introLight 1s ease .8s forwards;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 246, 216, .95), rgba(255, 246, 216, 0) 62%);
+  opacity: 0; animation: introLight .8s ease .8s forwards;
 }
 .door--intro {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0;
@@ -607,17 +620,22 @@ h1, h2, h3 { font-weight: 400; }
 .door--intro::after { /* Knauf */
   content: ""; position: absolute; right: 18px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
   border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--gold-hell), var(--gold-tief));
-  box-shadow: 0 2px 4px rgba(4, 14, 11, .4);
+  box-shadow: var(--shadow-small);
 }
 .door--intro .foil { font-size: calc(var(--fs-numeral) * .75); }
-.intro .wrap { animation: rise .7s var(--ease-out) 1.95s both; }
+/* Aufstieg nur für die Geschwister der Zahl: kein animiertes transform auf
+   einem Vorfahren von .foil--hero (WebKit-Risiko bei background-clip:text). */
+.intro .wrap > :not(.hero), .intro .hero__title { animation: rise .55s var(--ease-out) 1.95s both; }
 @keyframes doorSwing {
   0% { transform: rotateY(0); }
   20% { transform: rotateY(6deg); }
   100% { transform: rotateY(-112deg); }
 }
 @keyframes introLight { to { opacity: 1; } }
-@keyframes introZoom { to { transform: scale(1.8); opacity: 0; } }
+@keyframes introZoom { to { transform: scale(6); } } /* deckend: Licht verblasst erst mit dem Overlay */
+@keyframes introZoomWide { to { transform: scale(10); } }
+/* Querformat (Desktop, Handy quer): weiter wachsen, damit das Licht auch die Breite deckt */
+@media (min-aspect-ratio: 1/1) { .door-intro__frame { animation-name: introZoomWide; } }
 @keyframes introOut { to { opacity: 0; visibility: hidden; } }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
@@ -627,23 +645,22 @@ h1, h2, h3 { font-weight: 400; }
 .gift { display: flex; flex-direction: column; align-items: center; width: 100%; }
 .door--wrapped {
   width: 150px; height: 196px; margin: 0; padding: 0; border: 0;
-  box-shadow: 0 26px 50px -22px rgba(4, 14, 11, .9);
+  box-shadow: var(--shadow-deep);
   -webkit-appearance: none; appearance: none;
   touch-action: manipulation;
   transform-origin: 50% 100%;
-  animation: doorNudge 7s ease-in-out 2s infinite;
 }
 .door__ribbon::before, .door__ribbon::after {
   content: ""; position: absolute; z-index: 1;
-  background: linear-gradient(90deg, #B98428, #F0C766, #B98428);
+  background: var(--ribbon-v);
 }
 .door__ribbon::before { left: 50%; top: 0; bottom: 0; width: 16px; margin-left: -8px; }
-.door__ribbon::after { left: 0; right: 0; top: 48px; height: 16px; margin-top: -8px; background: linear-gradient(180deg, #B98428, #F0C766, #B98428); }
+.door__ribbon::after { left: 0; right: 0; top: 48px; height: 16px; margin-top: -8px; background: var(--ribbon-h); }
 .door__bow { position: absolute; z-index: 3; left: 50%; top: 48px; width: 46px; height: 30px; margin: -15px 0 0 -23px; }
 .door__bow::before, .door__bow::after {
   content: ""; position: absolute; top: 2px; width: 22px; height: 24px;
-  border: 5px solid #F0C766; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  background: rgba(195, 143, 46, .35);
+  border: 5px solid var(--kerzengold); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: rgba(var(--gold-rgb), .3);
 }
 .door__bow::before { left: -4px; transform: rotate(-28deg); }
 .door__bow::after { right: -4px; transform: rotate(28deg); }
@@ -654,16 +671,9 @@ h1, h2, h3 { font-weight: 400; }
   font-size: var(--fs-clock); line-height: 1; color: var(--preiselbeere);
   font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1, "tnum" 1;
   background: var(--zuckerguss);
-  box-shadow: 0 0 0 3px var(--kerzengold), 0 8px 16px -6px rgba(4, 14, 11, .5);
+  box-shadow: 0 0 0 3px var(--kerzengold), var(--shadow-small);
 }
 .door--wrapped.is-shaking { animation: shake .6s cubic-bezier(.36, .07, .19, .97) both; }
-@keyframes doorNudge {
-  0%, 88%, 100% { transform: rotate(0); }
-  90% { transform: rotate(-2.5deg); }
-  92.5% { transform: rotate(2.5deg); }
-  95% { transform: rotate(-1.5deg); }
-  97.5% { transform: rotate(.8deg); }
-}
 @keyframes shake {
   10%, 90% { transform: translateX(-2px) rotate(-1deg); }
   20%, 80% { transform: translateX(4px) rotate(2deg); }
@@ -700,8 +710,8 @@ h1, h2, h3 { font-weight: 400; }
 /* ======================================================================
    Platzhalter (Templates ab M2/M3)
    ====================================================================== */
-.placeholder { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: var(--space-2); }
-.placeholder__art { width: 120px; height: auto; margin: 0 0 var(--space-5); overflow: visible; }
+.placeholder { display: flex; flex-direction: column; align-items: flex-start; padding-top: var(--space-2); }
+.placeholder__art { width: 120px; height: auto; margin: 0 0 var(--space-5) -6px; overflow: visible; }
 .placeholder__text { max-width: 30ch; }
 .ph-box { fill: var(--preiselbeere); }
 .ph-lid { fill: var(--preiselbeere-hell); }
@@ -730,7 +740,7 @@ h1, h2, h3 { font-weight: 400; }
 }
 .pv-tile--open { color: var(--lebkuchen); background: var(--zuckerguss); box-shadow: var(--shadow-object); }
 .pv-tile--locked { color: var(--zuckerguss); background: var(--tannenzweig); }
-.pv-tile--voucher { color: var(--text-leise); background: transparent; border: 1.5px dashed rgba(232, 182, 82, .8); }
+.pv-tile--voucher { color: var(--text-leise); background: transparent; border: 1.5px dashed rgba(var(--gold-rgb), .8); }
 .pv-tile__top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .pv-tile__num {
   font-family: var(--font-display); font-weight: 400; font-synthesis: none;
@@ -746,7 +756,8 @@ h1, h2, h3 { font-weight: 400; }
 .pv-tile--locked .pv-tile__tpl, .pv-tile--locked .pv-tile__when { color: var(--text-leise); }
 .pv-links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .pv-link {
-  padding: 2px 8px; border: 1.5px solid transparent; border-radius: var(--radius-pill);
+  display: inline-flex; align-items: center; min-height: 24px;
+  padding: 2px 10px; border: 1.5px solid transparent; border-radius: var(--radius-pill);
   font-size: var(--fs-micro); font-weight: 700; line-height: 1.5; text-decoration: none;
 }
 /* Warnungen: auf Papier Preiselbeere, in der Nacht/auf Tannenzweig Gold-hell; immer mit „!“ */
@@ -772,9 +783,13 @@ h1, h2, h3 { font-weight: 400; }
 .progress:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--kerzengold), 0 0 0 5px var(--tannennacht), 0 0 0 7px var(--zuckerguss); }
 .progress:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--kerzengold), 0 0 0 5px var(--tannennacht), 0 0 0 7px var(--zuckerguss); }
 /* Komponenten mit eigenem Goldring bekommen außen einen Zuckerguss-Ring */
-.door--wrapped:focus-visible { box-shadow: var(--ring-focus), 0 26px 50px -22px rgba(4, 14, 11, .9); }
+.door--wrapped:focus-visible { box-shadow: var(--ring-focus), var(--shadow-deep); }
 .seal-btn:focus-visible { box-shadow: 0 0 0 2px var(--kerzengold), 0 0 0 5px var(--tannennacht), 0 0 0 7px var(--zuckerguss); }
 .slides__dot:focus-visible { box-shadow: none; }
+/* Track: Ring nach innen, sonst läuft er durch die Punkte darunter */
+.slides__track:focus-visible { box-shadow: inset 0 0 0 3px var(--kerzengold), inset 0 0 0 5px var(--tannennacht); }
+/* Zeile mit Siegel am Rand: Ring außerhalb des Siegel-Hofs (6px) */
+.action:focus-visible { box-shadow: 0 0 0 8px var(--tannennacht), 0 0 0 10px var(--kerzengold); }
 .slides__dot:focus-visible::before { box-shadow: var(--ring-focus); }
 
 /* ---------- Bewegung reduzieren ---------- */
@@ -784,10 +799,9 @@ h1, h2, h3 { font-weight: 400; }
     transition-duration: .01ms !important; scroll-behavior: auto !important;
   }
   .intro .door-intro { display: none; }
-  .intro .wrap { animation: none; }
+  .intro .wrap > :not(.hero), .intro .hero__title { animation: none; }
   .is-opened .foil--hero .foil__face { animation: none; }
   .player.is-playing .player__btn::after { animation: none; }
-  .door--wrapped { animation: none; }
   .gift__tag.is-swinging { animation: none; }
   .sg-teaser__logo { animation: none; }
 }
@@ -806,9 +820,9 @@ h1, h2, h3 { font-weight: 400; }
   :root { --fs-h1: 48px; }
   /* breiter als die Spalte, Verlauf endet an den Kanten (keine sichtbare Box) */
   .hero::before {
-    left: -260px; right: auto; width: 760px;
-    background: radial-gradient(closest-side, rgba(232, 182, 82, .2), rgba(232, 182, 82, 0));
+    left: -200px; right: auto; width: 600px;
+    background: radial-gradient(closest-side, rgba(var(--gold-rgb), .14), rgba(var(--gold-rgb), 0));
   }
   .blocks { gap: calc(var(--space-7) + var(--space-2)); }
-  .hero { margin-bottom: var(--space-7); }
+  .hero { margin-bottom: var(--space-6); }
 }

@@ -15,7 +15,8 @@
     var day = root.getAttribute('data-day');
     try { window.localStorage.setItem('sa-door-' + day, '1'); } catch (e) {}
     if (!/\bintro\b/.test(root.className)) return;
-    var overlay = doc.querySelector('[data-intro]');
+    // Nicht <html data-intro> treffen: das Overlay ist das div mit .door-intro.
+    var overlay = doc.querySelector('.door-intro[data-intro]');
     var done = false;
     function finish() {
       if (done) return;
